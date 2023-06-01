@@ -11,7 +11,7 @@ import Then
 import RxSwift
 import RxCocoa
 
-class ViewController: UIViewController, UIScrollViewDelegate {
+class IntroductionViewController: UIViewController, UIScrollViewDelegate {
     
     var mainCollectionView: UICollectionView!
     var introductionData: [IntroductionModel] = []
@@ -111,7 +111,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
 }
 
 // MARK: - Custom Functions
-extension ViewController {
+extension IntroductionViewController {
     private func setUI() {
         nextButton.layer.cornerRadius = 30
         pageControl.isUserInteractionEnabled = false
@@ -147,7 +147,7 @@ extension ViewController {
 }
 
 
-extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension IntroductionViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return introductionData.count
     }
@@ -174,7 +174,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 }
 
 // MARK: - CollectionView Delegate Flow Layout
-extension ViewController: UICollectionViewDelegateFlowLayout {
+extension IntroductionViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)
     }
