@@ -24,6 +24,7 @@
 		0E6D79462A28A23100EDE9D6 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0E6D79452A28A23100EDE9D6 /* RxSwift */; };
 		0E6D79482A28A31800EDE9D6 /* IntroductionCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6D79472A28A31800EDE9D6 /* IntroductionCollectionViewCell.swift */; };
 		0EA60E242A298BF700DBAA55 /* MainCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EA60E232A298BF700DBAA55 /* MainCameraViewController.swift */; };
+		0EA60E262A29ADFC00DBAA55 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EA60E252A29ADFC00DBAA55 /* ViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,7 @@
 		0E6D792D2A289C8400EDE9D6 /* IntroductionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroductionModel.swift; sourceTree = "<group>"; };
 		0E6D79472A28A31800EDE9D6 /* IntroductionCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroductionCollectionViewCell.swift; sourceTree = "<group>"; };
 		0EA60E232A298BF700DBAA55 /* MainCameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCameraViewController.swift; sourceTree = "<group>"; };
+		0EA60E252A29ADFC00DBAA55 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +164,7 @@
 				0EA60E0D2A28FD8400DBAA55 /* Introduction */,
 				0E6275782A16215100E8F8E9 /* IntroductionViewController.swift */,
 				0E6D79472A28A31800EDE9D6 /* IntroductionCollectionViewCell.swift */,
+				0EA60E252A29ADFC00DBAA55 /* ViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -282,6 +285,7 @@
 				0E6D792A2A288AC900EDE9D6 /* UIColor+Extension.swift in Sources */,
 				0E6D79482A28A31800EDE9D6 /* IntroductionCollectionViewCell.swift in Sources */,
 				0EA60E242A298BF700DBAA55 /* MainCameraViewController.swift in Sources */,
+				0EA60E262A29ADFC00DBAA55 /* ViewController.swift in Sources */,
 				0E6D792E2A289C8400EDE9D6 /* IntroductionModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

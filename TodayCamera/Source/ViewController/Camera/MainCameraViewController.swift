@@ -34,48 +34,60 @@ class MainCameraViewController: UIViewController {
         
         view.backgroundColor = .white
         
+        configureNavigationItems()
+        configureStackView()
+        bindAction()
+        layout()
+    }
+    
+    private func configureNavigationItems() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.triangle.2.circlepath"), style: .plain, target: self, action: #selector(backButtonTap(_:)))
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), style: .plain, target: self, action: #selector(ellipsisButtonTap(_:)))
+    }
+    
+    private func configureButtonContainer(button: UIButton, label: UILabel) -> UIStackView {
+        let buttonContainer = UIStackView()
+        buttonContainer.axis = .vertical
+        buttonContainer.alignment = .center
+        buttonContainer.spacing = 6.5
         
+        button.backgroundColor = .black
+        button.snp.makeConstraints { make in
+            make.width.height.equalTo(35)
+        }
+        
+        label.text = "보정"
+        label.font = UIFont.systemFont(ofSize: 15)
+        label.textAlignment = .center
+        
+        buttonContainer.addArrangedSubview(button)
+        buttonContainer.addArrangedSubview(label)
+        
+        return buttonContainer
+    }
+    
+    private func configureStackView() {
         (0..<4).forEach { _ in
-            let button = UIButton(type: .system).then {
-                $0.backgroundColor = .black
-                $0.snp.makeConstraints { make in
-                    make.width.height.equalTo(35)
-                }
-            }
+            let button = UIButton(type: .system)
+            let label = UILabel()
             
-            let label = UILabel().then {
-                $0.text = "보정"
-                $0.font = UIFont.systemFont(ofSize: 15)
-                $0.textAlignment = .center
-            }
-            
-            let buttonContainer = UIStackView().then {
-                $0.axis = .vertical
-                $0.alignment = .center
-                $0.spacing = 6.5
-            }
-            
-            buttonContainer.addArrangedSubview(button)
-            buttonContainer.addArrangedSubview(label)
-            
+            let buttonContainer = configureButtonContainer(button: button, label: label)
             stackView.addArrangedSubview(buttonContainer)
         }
         
         stackView.insertArrangedSubview(centerButton, at: 2)
         
-        centerButton.rx.tap
-            .bind {
-                print("centerButton tapped")
-            }
-        
-        layout()
+        stackView.arrangedSubviews.forEach { arrangedSubview in
+            guard let buttonContainer = arrangedSubview as? UIStackView else { return }
+            buttonContainer.alignment = .center
+            buttonContainer.distribution = .fill
+        }
     }
     
-    func layout() {
+    private func layout() {
         [
-            exView
+            exView,
+            stackView
         ].forEach { view.addSubview($0) }
         
         exView.snp.makeConstraints {
@@ -84,27 +96,26 @@ class MainCameraViewController: UIViewController {
             $0.width.equalToSuperview()
             $0.height.equalTo(430.0)
         }
-        
-        view.addSubview(stackView)
-        
-        stackView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-86)
-            make.left.greaterThanOrEqualToSuperview().offset(20)
-            make.right.lessThanOrEqualToSuperview().offset(-20)
-            make.left.equalTo(centerButton.snp.left).offset(-20).priority(.high)
-            make.right.equalTo(centerButton.snp.right).offset(20).priority(.high)
+                
+        stackView.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(-86)
+            $0.left.greaterThanOrEqualToSuperview().offset(20)
+            $0.right.lessThanOrEqualToSuperview().offset(-20)
+            $0.left.equalTo(centerButton.snp.left).offset(-20).priority(.high)
+            $0.right.equalTo(centerButton.snp.right).offset(20).priority(.high)
         }
         
-        centerButton.snp.makeConstraints { make in
-            make.width.height.equalTo(80)
+        centerButton.snp.makeConstraints {
+            $0.width.height.equalTo(80)
         }
-        
-        stackView.arrangedSubviews.forEach { arrangedSubview in
-            guard let buttonContainer = arrangedSubview as? UIStackView else { return }
-            buttonContainer.alignment = .center
-            buttonContainer.distribution = .fill
-        }
+    }
+    
+    private func bindAction() {
+        centerButton.rx.tap
+            .bind {
+                print("centerButton tapped")
+            }
     }
     
     @objc private func backButtonTap(_ sender: Any) {
