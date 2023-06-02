@@ -1,10 +1,3 @@
-//
-//  MainCameraViewController.swift
-//  TodayCamera
-//
-//  Created by 박준하 on 2023/06/02.
-//
-
 import UIKit
 import RxFlow
 import RxCocoa
@@ -27,6 +20,30 @@ class MainCameraViewController: UIViewController {
     private let centerButton = UIButton(type: .system).then {
         let image = UIImage(named: "CaptureButton")
         $0.setBackgroundImage(image, for: UIControl.State.normal)
+    }
+    
+    private let toggleButtonStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 20
+        $0.alignment = .center
+    }
+    
+    private let pictureToggleButton = UIButton().then {
+        $0.setTitle("사진", for: .normal)
+        $0.setTitleColor(UIColor.black, for: .normal)
+        $0.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .bold)
+        $0.backgroundColor = .Yellow
+        $0.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+        $0.layer.cornerRadius = 19.0
+    }
+    
+    private let videoToggleButton = UIButton().then {
+        $0.setTitle("동영상", for: .normal)
+        $0.setTitleColor(UIColor.Gray4, for: .normal)
+        $0.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .bold)
+        $0.backgroundColor = .White
+        $0.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+        $0.layer.cornerRadius = 19.0
     }
     
     override func viewDidLoad() {
@@ -52,8 +69,9 @@ class MainCameraViewController: UIViewController {
         buttonContainer.spacing = 6.5
         
         button.backgroundColor = .black
-        button.snp.makeConstraints { make in
-            make.width.height.equalTo(35)
+        button.layer.cornerRadius = 8.0
+        button.snp.makeConstraints {
+            $0.width.height.equalTo(48)
         }
         
         label.text = "보정"
@@ -87,7 +105,8 @@ class MainCameraViewController: UIViewController {
     private func layout() {
         [
             exView,
-            stackView
+            stackView,
+            toggleButtonStackView
         ].forEach { view.addSubview($0) }
         
         exView.snp.makeConstraints {
@@ -109,6 +128,34 @@ class MainCameraViewController: UIViewController {
         centerButton.snp.makeConstraints {
             $0.width.height.equalTo(80)
         }
+        
+        toggleButtonStackView.snp.makeConstraints {
+            $0.width.equalTo(148)
+            $0.height.equalTo(76)
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalTo(stackView.snp.top).offset(-20.0)
+        }
+        
+        [pictureToggleButton, videoToggleButton].forEach { button in
+            toggleButtonStackView.addArrangedSubview(button)
+            button.snp.makeConstraints {
+                $0.width.equalTo(74)
+                $0.height.equalTo(38)
+            }
+            button.setContentCompressionResistancePriority(.required, for: .horizontal)
+        }
+
+        pictureToggleButton.snp.makeConstraints {
+            $0.width.equalTo(videoToggleButton.snp.width)
+        }
+
+        videoToggleButton.snp.makeConstraints {
+            $0.width.equalTo(pictureToggleButton.snp.width)
+        }
+
+        toggleButtonStackView.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+        }
     }
     
     private func bindAction() {
@@ -124,5 +171,22 @@ class MainCameraViewController: UIViewController {
     
     @objc private func ellipsisButtonTap(_ sender: Any) {
         print("ellipsisButton tapped")
+    }
+    
+    @objc func buttonTapped(_ sender: UIButton) {
+        if sender.isSelected {
+            return
+        }
+
+        pictureToggleButton.isSelected = (sender == pictureToggleButton)
+        videoToggleButton.isSelected = (sender == videoToggleButton)
+
+        pictureToggleButton.backgroundColor = pictureToggleButton.isSelected ? .Yellow : .White
+        videoToggleButton.backgroundColor = videoToggleButton.isSelected ? .Yellow : .White
+
+        let button1TitleColor: UIColor = pictureToggleButton.isSelected ? .black : .Gray4
+        let button2TitleColor: UIColor = videoToggleButton.isSelected ? .black : .Gray4
+        pictureToggleButton.setTitleColor(button1TitleColor, for: .normal)
+        videoToggleButton.setTitleColor(button2TitleColor, for: .normal)
     }
 }

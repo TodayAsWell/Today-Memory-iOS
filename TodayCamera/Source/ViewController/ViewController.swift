@@ -3,13 +3,13 @@ import SnapKit
 import Then
 
 class ViewController: UIViewController {
-    let stackView = UIStackView().then {
+    let toggleButtonStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 20
         $0.alignment = .center
     }
     
-    let button1 = UIButton().then {
+    let pictureToggleButton = UIButton().then {
         $0.setTitle("사진", for: .normal)
         $0.setTitleColor(UIColor.black, for: .normal)
         $0.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .bold)
@@ -18,7 +18,7 @@ class ViewController: UIViewController {
         $0.layer.cornerRadius = 19.0
     }
     
-    let button2 = UIButton().then {
+    let videoToggleButton = UIButton().then {
         $0.setTitle("동영상", for: .normal)
         $0.setTitleColor(UIColor.Gray4, for: .normal)
         $0.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .bold)
@@ -35,8 +35,8 @@ class ViewController: UIViewController {
     }
 
     func setupStackView() {
-        view.addSubview(stackView)
-        stackView.snp.makeConstraints { make in
+        view.addSubview(toggleButtonStackView)
+        toggleButtonStackView.snp.makeConstraints { make in
             make.width.equalTo(148)
             make.height.equalTo(76)
             make.center.equalToSuperview()
@@ -44,8 +44,8 @@ class ViewController: UIViewController {
     }
 
     func setupButtons() {
-        [button1, button2].forEach { button in
-            stackView.addArrangedSubview(button)
+        [pictureToggleButton, videoToggleButton].forEach { button in
+            toggleButtonStackView.addArrangedSubview(button)
             button.snp.makeConstraints { make in
                 make.width.equalTo(74)
                 make.height.equalTo(38)
@@ -53,15 +53,15 @@ class ViewController: UIViewController {
             button.setContentCompressionResistancePriority(.required, for: .horizontal)
         }
 
-        button1.snp.makeConstraints { make in
-            make.width.equalTo(button2.snp.width)
+        pictureToggleButton.snp.makeConstraints { make in
+            make.width.equalTo(videoToggleButton.snp.width)
         }
 
-        button2.snp.makeConstraints { make in
-            make.width.equalTo(button1.snp.width)
+        videoToggleButton.snp.makeConstraints { make in
+            make.width.equalTo(pictureToggleButton.snp.width)
         }
 
-        stackView.snp.makeConstraints { make in
+        toggleButtonStackView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
         }
     }
@@ -71,15 +71,15 @@ class ViewController: UIViewController {
             return
         }
 
-        button1.isSelected = (sender == button1)
-        button2.isSelected = (sender == button2)
+        pictureToggleButton.isSelected = (sender == pictureToggleButton)
+        videoToggleButton.isSelected = (sender == videoToggleButton)
 
-        button1.backgroundColor = button1.isSelected ? .Yellow : .White
-        button2.backgroundColor = button2.isSelected ? .Yellow : .White
-        // 버튼 타이틀 색상 변경
-        let button1TitleColor: UIColor = button1.isSelected ? .black : .Gray4
-        let button2TitleColor: UIColor = button2.isSelected ? .black : .Gray4
-        button1.setTitleColor(button1TitleColor, for: .normal)
-        button2.setTitleColor(button2TitleColor, for: .normal)
+        pictureToggleButton.backgroundColor = pictureToggleButton.isSelected ? .Yellow : .White
+        videoToggleButton.backgroundColor = videoToggleButton.isSelected ? .Yellow : .White
+
+        let button1TitleColor: UIColor = pictureToggleButton.isSelected ? .black : .Gray4
+        let button2TitleColor: UIColor = videoToggleButton.isSelected ? .black : .Gray4
+        pictureToggleButton.setTitleColor(button1TitleColor, for: .normal)
+        videoToggleButton.setTitleColor(button2TitleColor, for: .normal)
     }
 }
