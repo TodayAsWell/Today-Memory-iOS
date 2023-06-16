@@ -6,9 +6,13 @@ import Then
 
 class MainCameraViewController: UIViewController {
     
-    private var exView = UIImageView().then {
-        $0.image = UIImage(named: "dagImage")
-    }
+    private var cameraView: XCamera!
+
+    var isOn = false
+    var gridOn = false
+    var touchShootOn = false
+    
+    private let filterSelectionView = FilterSelectionView()
     
     private let stackView = UIStackView().then {
         
@@ -90,16 +94,32 @@ class MainCameraViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .white
-        
-        styleButton.rx.tap
-            .bind {
-                print("asdf")
-            }
-        
+        cameraView = XCamera(frame: CGRect(x: 0, y: 0, width: 350, height: 480))
         configureNavigationItems()
         configureStackView()
         bindAction()
         layout()
+        
+        cameraView.setAspectRatio(.square)
+        cameraView.setBackgroundColor(.white)
+        cameraView.setFlashMode(.off)
+        cameraView.setCameraPosition(.back)
+        
+        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(handlePinchGesture(_:)))
+        cameraView.addGestureRecognizer(pinchGesture)
+        
+        cameraView.startRunning()
+        
+        filterSelectionView.frame = CGRect(x: 0, y: view.frame.height, width: view.frame.width, height: 200)
+
+        setupUI()
+        
+    }
+    
+    @objc func handlePinchGesture(_ gesture: UIPinchGestureRecognizer) {
+
+        let zoomFactor = cameraView.handleZoomGesture(pinchGesture: gesture)
+        print("Zoom factor: \(zoomFactor)")
     }
     
     private func configureNavigationItems() {
@@ -151,13 +171,12 @@ class MainCameraViewController: UIViewController {
         let filterButtonContainer = configureButtonContainer(button: filterButton, label: filterLabel)
         
         
+        
         stackView.addArrangedSubview(styleLabelButtonContainer)
         stackView.addArrangedSubview(correctionLabelButtonContainer)
         stackView.addArrangedSubview(centerButton)
         stackView.addArrangedSubview(effectLabelButtonContainer)
         stackView.addArrangedSubview(filterButtonContainer)
-
-        
         stackView.insertArrangedSubview(centerButton, at: 2)
         
         stackView.arrangedSubviews.forEach { arrangedSubview in
@@ -167,15 +186,29 @@ class MainCameraViewController: UIViewController {
         }
     }
     
+    private func setupUI() {
+        view.addSubview(filterSelectionView)
+
+        styleButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.showFilterSelectionView()
+            })
+
+        filterSelectionView.closeButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.hideFilterSelectionView()
+            })
+    }
+    
     private func layout() {
         [
-            exView,
+            cameraView,
             stackView,
             toggleButtonStackView
         ].forEach { view.addSubview($0) }
         
         if UIDevice.current.userInterfaceIdiom == .pad {
-            exView.snp.makeConstraints {
+            cameraView.snp.makeConstraints {
                 $0.top.equalTo(view.safeAreaLayoutGuide).offset(72.0)
                 $0.centerX.equalToSuperview()
                 $0.width.equalToSuperview()
@@ -225,7 +258,7 @@ class MainCameraViewController: UIViewController {
             
             
         } else {
-            exView.snp.makeConstraints {
+            cameraView.snp.makeConstraints {
                 $0.top.equalTo(view.safeAreaLayoutGuide).offset(90.0)
                 $0.centerX.equalToSuperview()
                 $0.width.equalToSuperview()
@@ -279,15 +312,46 @@ class MainCameraViewController: UIViewController {
         centerButton.rx.tap
             .bind {
                 print("centerButton tapped")
+                self.cameraView.capturePhoto { result in
+                    switch result {
+                    case .success(let image):
+                        print("사진 저장")
+                        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+                        break
+                    case .failure(let error):
+                        print("저장 실패 \(error)")
+                        break
+                    }
+                }
             }
     }
     
     @objc private func backButtonTap(_ sender: Any) {
         print("backButton tapped")
+        
+        isOn.toggle()
+        
+        if isOn {
+            cameraView.setCameraPosition(.back)
+            print("back")
+        } else {
+            cameraView.setCameraPosition(.front)
+            print("front")
+        }
     }
     
     @objc private func ellipsisButtonTap(_ sender: Any) {
         print("ellipsisButton tapped")
+
+        touchShootOn.toggle()
+        
+        if touchShootOn {
+            cameraView.addTapGesture(allow: false)
+            print("실행하지 않음")
+        } else {
+            cameraView.addTapGesture(allow: true)
+            print("실행")
+        }
     }
     
     @objc func buttonTapped(_ sender: UIButton) {
@@ -308,6 +372,20 @@ class MainCameraViewController: UIViewController {
             
             self.pictureToggleButton.backgroundColor = self.pictureToggleButton.isSelected ? .Yellow : .White
             self.videoToggleButton.backgroundColor = self.videoToggleButton.isSelected ? .Yellow : .White
+        }
+    }
+    
+    private func showFilterSelectionView() {
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self = self else { return }
+            self.filterSelectionView.frame.origin.y = self.view.frame.height - self.filterSelectionView.frame.height
+        }
+    }
+
+    private func hideFilterSelectionView() {
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self = self else { return }
+            self.filterSelectionView.frame.origin.y = self.view.frame.height
         }
     }
 }
