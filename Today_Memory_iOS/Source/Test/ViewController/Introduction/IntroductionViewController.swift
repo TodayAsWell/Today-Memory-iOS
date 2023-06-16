@@ -64,23 +64,46 @@ class IntroductionViewController: UIViewController, UIScrollViewDelegate {
         view.addSubview(pageControl)
         view.addSubview(nextButton)
         
-        mainCollectionView.snp.makeConstraints {
-            $0.top.trailing.leading.equalToSuperview()
-            $0.height.equalTo(700.0)
-            $0.width.equalToSuperview()
-        }
         
-        pageControl.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.top.equalTo(mainCollectionView.snp.bottom).offset(40.0)
-            $0.height.equalTo(42.0)
-        }
-        
-        nextButton.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.bottom.equalToSuperview().offset(-68.0)
-            $0.width.equalTo(350.0)
-            $0.height.equalTo(60.0)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            mainCollectionView.snp.makeConstraints {
+                $0.top.trailing.leading.equalToSuperview()
+                $0.height.equalTo(830.0)
+                $0.width.equalToSuperview()
+            }
+            
+            pageControl.snp.makeConstraints {
+                $0.centerX.equalToSuperview()
+                $0.top.equalTo(mainCollectionView.snp.bottom).offset(90.0)
+                $0.height.equalTo(42.0)
+            }
+            
+            nextButton.snp.makeConstraints {
+                $0.centerX.equalToSuperview()
+                $0.bottom.equalToSuperview().offset(-90.0)
+                $0.height.equalTo(65.0)
+                $0.width.equalTo(615.0)
+            }
+        } else {
+            
+            mainCollectionView.snp.makeConstraints {
+                $0.top.trailing.leading.equalToSuperview()
+                $0.height.equalTo(700.0)
+                $0.width.equalToSuperview()
+            }
+            
+            pageControl.snp.makeConstraints {
+                $0.centerX.equalToSuperview()
+                $0.top.equalTo(mainCollectionView.snp.bottom).offset(40.0)
+                $0.height.equalTo(42.0)
+            }
+            
+            nextButton.snp.makeConstraints {
+                $0.centerX.equalToSuperview()
+                $0.bottom.equalToSuperview().offset(-68.0)
+                $0.width.equalTo(350.0)
+                $0.height.equalTo(60.0)
+            }
         }
     }
 
