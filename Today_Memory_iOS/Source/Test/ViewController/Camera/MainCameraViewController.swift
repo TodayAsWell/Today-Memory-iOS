@@ -100,7 +100,7 @@ class MainCameraViewController: UIViewController {
         bindAction()
         layout()
         
-        cameraView.setAspectRatio(.square)
+        cameraView.setAspectRatio(.full)
         cameraView.setBackgroundColor(.white)
         cameraView.setFlashMode(.off)
         cameraView.setCameraPosition(.back)
@@ -110,7 +110,7 @@ class MainCameraViewController: UIViewController {
         
         cameraView.startRunning()
         
-        filterSelectionView.frame = CGRect(x: 0, y: view.frame.height, width: view.frame.width, height: 200)
+        filterSelectionView.frame = CGRect(x: 0, y: view.frame.height, width: view.frame.width, height: 270)
 
         setupUI()
         
@@ -209,7 +209,7 @@ class MainCameraViewController: UIViewController {
         
         if UIDevice.current.userInterfaceIdiom == .pad {
             cameraView.snp.makeConstraints {
-                $0.top.equalTo(view.safeAreaLayoutGuide).offset(72.0)
+                $0.top.equalTo(view.safeAreaLayoutGuide)
                 $0.centerX.equalToSuperview()
                 $0.width.equalToSuperview()
                 $0.height.equalTo(744.0)
