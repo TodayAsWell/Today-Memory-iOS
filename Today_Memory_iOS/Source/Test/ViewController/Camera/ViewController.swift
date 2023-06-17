@@ -1,15 +1,16 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import Then
+import SnapKit
 import SnapKit
 
 class FilterSelectionView: UIView {
-    let closeButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("닫기", for: .normal)
-        button.setTitleColor(.black, for: .normal)
-        return button
-    }()
+    let closeButton = UIButton().then {
+        let image = UIImage(named: "closeImage")
+        $0.setBackgroundImage(image, for: UIControl.State.normal)
+        $0.layer.cornerRadius = 8.0
+    }
     
     let titleLabel: UILabel = {
         let label = UILabel()
@@ -45,22 +46,23 @@ class FilterSelectionView: UIView {
         backgroundColor = .white
         
         addSubview(closeButton)
-        closeButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
+        closeButton.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
+            $0.height.width.equalTo(24.0)
         }
         
         addSubview(titleLabel)
-        titleLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(closeButton.snp.bottom).offset(20)
+        titleLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(closeButton.snp.bottom).offset(20)
         }
         
         addSubview(collectionView)
-        collectionView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(20)
-            make.height.equalTo(100)
+        collectionView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(titleLabel.snp.bottom).offset(20)
+            $0.height.equalTo(100)
         }
     }
     
@@ -73,7 +75,6 @@ class FilterSelectionView: UIView {
 
 extension FilterSelectionView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // 반환할 아이템 개수를 반환합니다.
         return 10
     }
     
@@ -82,13 +83,13 @@ extension FilterSelectionView: UICollectionViewDelegate, UICollectionViewDataSou
         
         cell.imageView.backgroundColor = .red
         cell.titleLabel.text = "안녕"
-        // 셀을 구성하고 데이터를 설정합니다.
+
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // 아이템을 선택했을 때의 동작을 처리합니다.
-        print("안녕")
+
+        print("index \(indexPath.row)")
     }
 }
 
