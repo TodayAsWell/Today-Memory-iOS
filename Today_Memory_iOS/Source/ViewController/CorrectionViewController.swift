@@ -7,6 +7,8 @@ import RxSwift
 class CorrectionViewController: UIViewController {
 
     let disposeBag = DisposeBag()
+    
+    private let filterSelectionView = FilterSelectionView()
 
     private var exImage = UIImageView().then {
         $0.image = UIImage(named: "ExPolaroid")
@@ -112,6 +114,7 @@ class CorrectionViewController: UIViewController {
                 self?.toggleButton(self?.filterButton)
                 self?.applyFilter()
                 self?.deselectButtons(except: self?.filterButton)
+                self?.showFilterSelectionView()
             })
             .disposed(by: disposeBag)
 
@@ -136,6 +139,12 @@ class CorrectionViewController: UIViewController {
                 self?.toggleButton(self?.stickerButton)
                 self?.applySticker()
                 self?.deselectButtons(except: self?.stickerButton)
+            })
+            .disposed(by: disposeBag)
+        
+        filterSelectionView.closeButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.hideFilterSelectionView()
             })
             .disposed(by: disposeBag)
     }
@@ -173,5 +182,29 @@ class CorrectionViewController: UIViewController {
 
     func applySticker() {
         print("스티커 버튼이 탭되었습니다.")
+    }
+    
+    private func showFilterSelectionView() {
+        filterSelectionView.alpha = 0.0
+        view.addSubview(filterSelectionView)
+        filterSelectionView.snp.makeConstraints {
+            $0.leading.trailing.bottom.equalToSuperview()
+            $0.height.equalTo(300)
+        }
+        
+        filterSelectionView.transform = CGAffineTransform(translationX: 0, y: 300)
+        
+        UIView.animate(withDuration: 0.3) {
+            self.filterSelectionView.alpha = 1.0
+            self.filterSelectionView.transform = CGAffineTransform.identity
+        }
+    }
+    
+    private func hideFilterSelectionView() {
+        UIView.animate(withDuration: 0.3) {
+            self.filterSelectionView.alpha = 0.0
+        } completion: { _ in
+            self.filterSelectionView.removeFromSuperview()
+        }
     }
 }
