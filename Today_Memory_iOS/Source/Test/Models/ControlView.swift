@@ -13,6 +13,7 @@ class ControlView: UIView {
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
+        collectionView.showsHorizontalScrollIndicator = false // 스크롤 없애기
         return collectionView
     }()
     
@@ -53,18 +54,22 @@ extension ControlView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FilterCollectionViewCell", for: indexPath) as! FilterCollectionViewCell
         
-        cell.imageView.backgroundColor = .red
+//        cell.imageView.backgroundColor = .red
         cell.titleLabel.text = "안녕"
         
         switch indexPath.row {
         case 0:
             cell.titleLabel.text = "밝기"
+            cell.imageView.image = UIImage(named: "sunImage")
         case 1:
             cell.titleLabel.text = "대비"
+            cell.imageView.image = UIImage(named: "prepareImage")
         case 2:
             cell.titleLabel.text = "보정"
+            cell.imageView.image = UIImage(named: "BellImage")
         default:
             cell.titleLabel.text = "없음"
+            cell.imageView.backgroundColor = .black
         }
 
         return cell

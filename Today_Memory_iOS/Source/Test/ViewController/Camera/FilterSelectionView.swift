@@ -82,8 +82,15 @@ extension FilterSelectionView: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FilterCollectionViewCell", for: indexPath) as! FilterCollectionViewCell
         
-        cell.imageView.backgroundColor = .red
-        cell.titleLabel.text = "안녕"
+        cell.titleLabel.text = "Rise"
+        
+        switch indexPath.row {
+        case 0:
+            cell.imageView.backgroundColor = .black
+        default:
+            cell.imageView.image = UIImage(named: "defualtFilterImage")
+            return cell
+        }
 
         return cell
     }

@@ -188,10 +188,12 @@ class CorrectionViewController: UIViewController {
     
     func applyFilter() {
         print("필터 버튼이 탭되었습니다.")
+        hideFilterSelectionView()
     }
     
     func applyFrame() {
         print("액자 버튼이 탭되었습니다.")
+        hideFilterSelectionView()
     }
     
     func adjustPhoto() {
@@ -200,6 +202,7 @@ class CorrectionViewController: UIViewController {
     
     func applySticker() {
         print("스티커 버튼이 탭되었습니다.")
+        hideFilterSelectionView()
     }
     
     private func showFilterSelectionView() {
@@ -214,10 +217,8 @@ class CorrectionViewController: UIViewController {
         
         controlView.transform = CGAffineTransform(translationX: 0, y: 300)
         
-        UIView.animate(withDuration: 0.3) {
-            self.controlView.alpha = 1.0
-            self.controlView.transform = CGAffineTransform.identity
-        }
+        self.controlView.alpha = 1.0
+        self.controlView.transform = CGAffineTransform.identity
     }
     
     private func hideFilterSelectionView() {
