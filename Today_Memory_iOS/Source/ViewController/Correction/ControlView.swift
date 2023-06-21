@@ -86,7 +86,6 @@ extension ControlView: UICollectionViewDelegate, UICollectionViewDataSource {
             
             let updatedY = frame.origin.y - 140
             newView = BrightnessView(frame: CGRect(x: 0, y: updatedY, width: frame.width, height: 140))
-//            newView?.backgroundColor = .red
             superview?.addSubview(newView!)
             self.newView?.frame.origin.y += 140
         }
