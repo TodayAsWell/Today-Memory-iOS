@@ -6,7 +6,11 @@ import SnapKit
 
 class ControlView: UIView {
     
-    private var newView: BrightnessView?
+    private var brightnessView: BrightnessView?
+    private var prepareView: PrepareView?
+    private var correctionView: CorrectionView?
+    
+    private var currentView: UIView?
     
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -74,21 +78,63 @@ extension ControlView: UICollectionViewDelegate, UICollectionViewDataSource {
             cell.titleLabel.text = "없음"
             cell.imageView.backgroundColor = .black
         }
-
+        
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.row == 0 {
-            if let previousView = newView {
-                previousView.removeFromSuperview() // Remove the previous view if it exists
+        
+        switch indexPath.row {
+        case 0:
+            if let previousView = brightnessView {
+                previousView.removeFromSuperview()
             }
             
             let updatedY = frame.origin.y - 140
-            newView = BrightnessView(frame: CGRect(x: 0, y: updatedY, width: frame.width, height: 140))
-            superview?.addSubview(newView!)
-            self.newView?.frame.origin.y += 140
+            brightnessView = BrightnessView(frame: CGRect(x: 0, y: updatedY, width: frame.width, height: 140))
+            superview?.addSubview(brightnessView!)
+            self.brightnessView?.frame.origin.y += 140
+        case 1:
+            if let previousView = prepareView {
+                previousView.removeFromSuperview()
+            }
+            
+            let updatedY = frame.origin.y - 140
+            prepareView = PrepareView(frame: CGRect(x: 0, y: updatedY, width: frame.width, height: 140))
+            superview?.addSubview(prepareView!)
+            self.prepareView?.frame.origin.y += 140
+        case 2:
+            if let previousView = correctionView {
+                previousView.removeFromSuperview()
+            }
+            
+            let updatedY = frame.origin.y - 140
+            correctionView = CorrectionView(frame: CGRect(x: 0, y: updatedY, width: frame.width, height: 140))
+            superview?.addSubview(correctionView!)
+            self.correctionView?.frame.origin.y += 140
+        default:
+            print("존재하지 않음")
         }
+        
+        currentView?.isHidden = true
+        
+
+        switch indexPath.row {
+        case 0:
+            currentView = brightnessView
+        case 1:
+            currentView = prepareView
+
+        case 2:
+            currentView = correctionView
+//            correctionView?.removeFromSuperview() 나중에 이런걸로 릭 발생할 수 있음
+            //지금은 숨기는 용도로 했지만 나중에는 메모리를 끈어주어야함
+        default:
+            currentView = nil
+        }
+        
+        currentView?.isHidden = false
+        superview?.bringSubviewToFront(currentView!)
         
         print("index \(indexPath.row)")
     }

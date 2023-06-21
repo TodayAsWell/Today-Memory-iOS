@@ -1,5 +1,5 @@
 //
-//  BrightnessView.swift
+//  PrepareView.swift
 //  Today_Memory_iOS
 //
 //  Created by 박준하 on 2023/06/21.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class BrightnessView: BaseCorrectionView {
+class PrepareView: BaseCorrectionView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -20,6 +20,6 @@ class BrightnessView: BaseCorrectionView {
     }
     
     private func setupUI() {
-        titleLabel.text = "밝기"
+        titleLabel.text = "대비"
     }
 }

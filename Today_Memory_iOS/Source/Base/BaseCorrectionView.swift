@@ -13,7 +13,7 @@ import SnapKit
 
 public class BaseCorrectionView: UIView {
     public var titleLabel = UILabel().then {
-        $0.text = "밝기"
+        $0.text = ""
         $0.font = .systemFont(ofSize: 20.0, weight: .semibold)
         $0.textColor = .black
     }
