@@ -89,7 +89,7 @@ class TestMainCameraViewController: UIViewController {
         $0.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .bold)
         $0.backgroundColor = .Yellow
         $0.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
-        $0.layer.cornerRadius = 19.0
+        $0.layer.cornerRadius = 16.5
     }
     
     private let videoToggleButton = UIButton().then {
@@ -98,7 +98,7 @@ class TestMainCameraViewController: UIViewController {
         $0.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .bold)
         $0.backgroundColor = .White
         $0.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
-        $0.layer.cornerRadius = 19.0
+        $0.layer.cornerRadius = 16.5
     }
     
     override func viewDidLoad() {
@@ -225,7 +225,7 @@ class TestMainCameraViewController: UIViewController {
             }
             
             toggleButtonStackView.snp.makeConstraints {
-                $0.width.equalTo(148)
+                $0.width.equalTo(178)
                 $0.height.equalTo(76)
                 $0.centerX.equalToSuperview()
                 $0.bottom.equalTo(stackView.snp.top).offset(-10.0)
@@ -234,8 +234,8 @@ class TestMainCameraViewController: UIViewController {
             [pictureToggleButton, videoToggleButton].forEach { button in
                 toggleButtonStackView.addArrangedSubview(button)
                 button.snp.makeConstraints {
-                    $0.width.equalTo(54)
-                    $0.height.equalTo(38)
+                    $0.width.equalTo(87)
+                    $0.height.equalTo(33)
                 }
                 button.setContentCompressionResistancePriority(.required, for: .horizontal)
             }
@@ -324,22 +324,22 @@ class TestMainCameraViewController: UIViewController {
             self.videoToggleButton.backgroundColor = self.videoToggleButton.isSelected ? .Yellow : .White
             
             if self.pictureToggleButton.isSelected {
-
                 self.centerButton.snp.remakeConstraints {
                     $0.width.height.equalTo(90)
                     $0.centerY.equalToSuperview()
                 }
             } else if self.videoToggleButton.isSelected {
-
                 self.centerButton.snp.remakeConstraints {
                     $0.width.height.equalTo(90)
-                    $0.centerY.equalToSuperview()
-                    $0.left.equalTo(self.stackView.snp.left).offset(-40).priority(.high)
-                    $0.right.equalTo(self.stackView.snp.left).offset(40).priority(.high)
+                    $0.centerX.equalToSuperview()
                 }
             }
+            
+            self.stackView.setNeedsLayout()
+            self.stackView.layoutIfNeeded()
         }
     }
+
     
     private func showFilterSelectionView() {
         UIView.animate(withDuration: 0.3) { [weak self] in

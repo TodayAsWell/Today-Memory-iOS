@@ -96,7 +96,7 @@ class CorrectionViewController: UIViewController {
     override func viewDidLoad() {
         setupNavigationItem()
         
-        view.backgroundColor = .F8F8F8
+        view.backgroundColor = .F6F6F8
         
         view.addSubview(exImage)
         exImage.snp.makeConstraints {

@@ -18,6 +18,6 @@ extension UIColor {
     static let Gray3: UIColor = UIColor(named: "Gray3")!
     static let Gray4: UIColor = UIColor(named: "Gray4")!
     static let White: UIColor = UIColor(named: "White")!
-    static let F8F8F8: UIColor = UIColor(named: "F8F8F8")!
+    static let F6F6F8: UIColor = UIColor(named: "F6F6F8")!
     static let FFF9DBP: UIColor = UIColor(named: "FFF9DB")!
 }
