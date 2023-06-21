@@ -5,6 +5,9 @@ import Then
 import SnapKit
 
 class ControlView: UIView {
+    
+    private var newView: BrightnessView?
+    
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -76,7 +79,18 @@ extension ControlView: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-
+        if indexPath.row == 0 {
+            if let previousView = newView {
+                previousView.removeFromSuperview() // Remove the previous view if it exists
+            }
+            
+            let updatedY = frame.origin.y - 140
+            newView = BrightnessView(frame: CGRect(x: 0, y: updatedY, width: frame.width, height: 140))
+//            newView?.backgroundColor = .red
+            superview?.addSubview(newView!)
+            self.newView?.frame.origin.y += 140
+        }
+        
         print("index \(indexPath.row)")
     }
 }
