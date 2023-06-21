@@ -136,6 +136,8 @@ class CorrectionViewController: UIViewController {
                 self?.toggleButton(self?.filterButton)
                 self?.applyFilter()
                 self?.deselectButtons(except: self?.filterButton)
+                self?.showFilterSelectionView()
+
             })
             .disposed(by: disposeBag)
         
@@ -152,7 +154,6 @@ class CorrectionViewController: UIViewController {
                 self?.toggleButton(self?.adjustmentButton)
                 self?.adjustPhoto()
                 self?.deselectButtons(except: self?.adjustmentButton)
-                self?.showFilterSelectionView()
             })
             .disposed(by: disposeBag)
         
@@ -188,7 +189,6 @@ class CorrectionViewController: UIViewController {
     
     func applyFilter() {
         print("필터 버튼이 탭되었습니다.")
-        hideFilterSelectionView()
     }
     
     func applyFrame() {
@@ -198,6 +198,7 @@ class CorrectionViewController: UIViewController {
     
     func adjustPhoto() {
         print("조정 버튼이 탭되었습니다.")
+        hideFilterSelectionView()
     }
     
     func applySticker() {
