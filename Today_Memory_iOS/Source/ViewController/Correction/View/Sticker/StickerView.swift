@@ -31,7 +31,7 @@ class StickerView: UIView {
         return button
     }()
     
-    var cellData = ["blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker","blackHartSticker"] {
+    var cellData = ["blackHartSticker","blackFlowerSticker","blackJapaneseFlower","pinkHartSticker","pinkFlowerSticker","pinkJapaneseFlower","purpleHartSticker","purpleFlowerSticker","purpleJapaneseFlower","gradationHartSticker","gradationFlowerSticker","gradationJapaneseFlower"] {
         didSet {
             collectionView.reloadData()
         }

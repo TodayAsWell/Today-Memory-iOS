@@ -4,7 +4,7 @@ import Then
 import RxCocoa
 import RxSwift
 
-class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRecognizerDelegate {
+class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, UIPopoverPresentationControllerDelegate {
     
     let disposeBag = DisposeBag()
     
@@ -355,27 +355,27 @@ extension CorrectionViewController {
     
     func sendData(image: UIImage) {
         let imageSticker = UIImageView(image: image)
-        let stickerSize = CGSize(width: 50, height: 50)
+        let stickerSize = CGSize(width: 200, height: 200)
         let stickerOrigin = CGPoint(x: exImage.bounds.midX - stickerSize.width/2, y: exImage.bounds.midY - stickerSize.height/2)
         imageSticker.frame = CGRect(origin: stickerOrigin, size: stickerSize)
         imageSticker.image = image
         imageSticker.isUserInteractionEnabled = true
         imageSticker.contentMode = .scaleAspectFit
-        
-        //스티커 편집뷰 위에 붙이기
+            
         self.exImage.addSubview(imageSticker)
-        // 스티커 편집뷰 밖으로 튀어나오지 않게
+        self.exImage.isUserInteractionEnabled = true
         self.exImage.clipsToBounds = true
-        
-        //스티커 조절 기능 추가
+            
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
         let pinchGesture = UIPinchGestureRecognizer.init(target: self, action: #selector(handlePinchGesture(_:)))
         let rotateGesture = UIRotationGestureRecognizer.init(target: self, action: #selector(handleRotateGesture(_:)))
         let removeGesture = UILongPressGestureRecognizer(target: self, action: #selector(self.longPress))
         
-        [panGesture,pinchGesture,rotateGesture,removeGesture].forEach {
+        [panGesture, pinchGesture, rotateGesture, removeGesture].forEach {
             $0.delegate = self
             imageSticker.addGestureRecognizer($0)
         }
     }
+
+
 }
