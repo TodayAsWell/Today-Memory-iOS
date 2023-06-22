@@ -15,6 +15,11 @@ class StickerCollectionViewCell: UICollectionViewCell {
         $0.layer.borderWidth = 0
     }
     
+    func setupCell(sticker: UIImage) {
+        setupUI()
+        imageView.image = sticker
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()

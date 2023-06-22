@@ -4,7 +4,7 @@ import Then
 import RxCocoa
 import RxSwift
 
-class CorrectionViewController: UIViewController {
+class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRecognizerDelegate {
     
     let disposeBag = DisposeBag()
     
@@ -100,6 +100,8 @@ class CorrectionViewController: UIViewController {
     override func viewDidLoad() {
         setupNavigationItem()
         
+        stickerView.delegate = self
+            
         view.backgroundColor = .F6F6F8
         
         view.addSubview(exImage)
@@ -300,6 +302,80 @@ class CorrectionViewController: UIViewController {
             self.stickerView.alpha = 0.0
         } completion: { _ in
             self.stickerView.removeFromSuperview()
+        }
+    }
+}
+
+extension CorrectionViewController {
+    // > 스티커 삭제 (꾹 눌러서 삭제)
+    @objc func longPress(_ gesture : UILongPressGestureRecognizer){
+        if gesture.state != .ended { return }
+        
+        let alert = UIAlertController(title: "해당 스티커를 삭제하시겠습니까?".localized(), message: "", preferredStyle: .alert)
+        let ok = UIAlertAction(title: "삭제".localized(), style: .destructive) {_ in
+            gesture.view?.removeFromSuperview()}
+        alert.addAction(ok)
+        alert.addAction(UIAlertAction(title: "취소".localized(), style: .cancel) { (cancel) in})
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    // 스티커 위치조절
+    @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
+        let translation = gesture.translation(in: view)
+        
+        guard let gestureView = gesture.view else {
+            return
+        }
+        
+        gestureView.center = CGPoint(x: gestureView.center.x + translation.x, y: gestureView.center.y + translation.y)
+        gesture.setTranslation(.zero, in: view)
+    }
+
+    
+    // 스티커 크기 조절
+    @objc func handlePinchGesture(_ gesture: UIPinchGestureRecognizer) {
+        guard let gestureView = gesture.view else {
+          return
+        }
+        gestureView.transform = gestureView.transform.scaledBy(x: gesture.scale, y:gesture.scale)
+        gesture.scale = 1
+    }
+    
+    // 스티커 회전
+    @objc func handleRotateGesture(_ gesture: UIRotationGestureRecognizer) {
+        guard let gestureView = gesture.view else { return }
+        gestureView.transform = gestureView.transform.rotated(by: gesture.rotation)
+        gesture.rotation = 0
+    }
+    
+    // 동시에 여러 움직임 인식 가능
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        true
+    }
+    
+    func sendData(image: UIImage) {
+        let imageSticker = UIImageView(image: image)
+        let stickerSize = CGSize(width: 50, height: 50)
+        let stickerOrigin = CGPoint(x: exImage.bounds.midX - stickerSize.width/2, y: exImage.bounds.midY - stickerSize.height/2)
+        imageSticker.frame = CGRect(origin: stickerOrigin, size: stickerSize)
+        imageSticker.image = image
+        imageSticker.isUserInteractionEnabled = true
+        imageSticker.contentMode = .scaleAspectFit
+        
+        //스티커 편집뷰 위에 붙이기
+        self.exImage.addSubview(imageSticker)
+        // 스티커 편집뷰 밖으로 튀어나오지 않게
+        self.exImage.clipsToBounds = true
+        
+        //스티커 조절 기능 추가
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
+        let pinchGesture = UIPinchGestureRecognizer.init(target: self, action: #selector(handlePinchGesture(_:)))
+        let rotateGesture = UIRotationGestureRecognizer.init(target: self, action: #selector(handleRotateGesture(_:)))
+        let removeGesture = UILongPressGestureRecognizer(target: self, action: #selector(self.longPress))
+        
+        [panGesture,pinchGesture,rotateGesture,removeGesture].forEach {
+            $0.delegate = self
+            imageSticker.addGestureRecognizer($0)
         }
     }
 }
