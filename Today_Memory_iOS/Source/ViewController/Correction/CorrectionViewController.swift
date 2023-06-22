@@ -10,7 +10,7 @@ class CorrectionViewController: UIViewController {
     
     private let controlView = ControlView()
     private let frameView = FrameView()
-//    private let stickerView =
+    private let stickerView = StickerView()
     
     lazy var menuItems: [UIAction] = {
         return [
@@ -167,6 +167,7 @@ class CorrectionViewController: UIViewController {
                 self?.toggleButton(self?.stickerButton)
                 self?.applySticker()
                 self?.deselectButtons(except: self?.stickerButton)
+                self?.showStickerViewSelectionView()
             })
             .disposed(by: disposeBag)
     }
@@ -208,17 +209,20 @@ class CorrectionViewController: UIViewController {
     func applyFilter() {
         print("필터 버튼이 탭되었습니다.")
         hideFameViewSelectionView()
+        hideStickerSelectionView()
     }
     
     func applyFrame() {
         print("액자 버튼이 탭되었습니다.")
         hideFilterSelectionView()
+        hideStickerSelectionView()
     }
     
     func adjustPhoto() {
         print("조정 버튼이 탭되었습니다.")
         hideFilterSelectionView()
         hideFameViewSelectionView()
+        hideStickerSelectionView()
     }
     
     func applySticker() {
@@ -259,6 +263,22 @@ class CorrectionViewController: UIViewController {
         self.frameView.transform = CGAffineTransform.identity
     }
     
+    private func showStickerViewSelectionView() {
+        stickerView.alpha = 0.0
+        view.addSubview(stickerView)
+        view.bringSubviewToFront(stickerView)
+        
+        stickerView.snp.makeConstraints {
+            $0.left.trailing.bottom.equalToSuperview()
+            $0.height.equalTo(250.0)
+        }
+        
+        stickerView.transform = CGAffineTransform(translationX: 0, y: 300)
+        
+        self.stickerView.alpha = 1.0
+        self.stickerView.transform = CGAffineTransform.identity
+    }
+    
     private func hideFameViewSelectionView() {
         UIView.animate(withDuration: 0.3) {
             self.frameView.alpha = 0.0
@@ -272,6 +292,14 @@ class CorrectionViewController: UIViewController {
             self.controlView.alpha = 0.0
         } completion: { _ in
             self.controlView.removeFromSuperview()
+        }
+    }
+    
+    private func hideStickerSelectionView() {
+        UIView.animate(withDuration: 0.3) {
+            self.stickerView.alpha = 0.0
+        } completion: { _ in
+            self.stickerView.removeFromSuperview()
         }
     }
 }
