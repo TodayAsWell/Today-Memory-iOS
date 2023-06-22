@@ -24,10 +24,8 @@ class FilterSelectionView: UIView {
     }()
     
     private let centerButton = UIButton(type: .system).then {
-        $0.backgroundColor = .white
-        $0.layer.borderWidth = 5
-        $0.layer.borderColor = UIColor.black.cgColor
-        $0.layer.cornerRadius = 30.0
+        let image = UIImage(named: "centerButton")
+        $0.setBackgroundImage(image, for: UIControl.State.normal)
     }
     
     override init(frame: CGRect) {

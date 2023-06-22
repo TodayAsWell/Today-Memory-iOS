@@ -9,6 +9,7 @@ class CorrectionViewController: UIViewController {
     let disposeBag = DisposeBag()
     
     private let controlView = ControlView()
+    private let frameView = FrameView()
     
     lazy var menuItems: [UIAction] = {
         return [
@@ -23,6 +24,8 @@ class CorrectionViewController: UIViewController {
             }),
             UIAction(title: "설정", image: UIImage(systemName: "gearshape.fill"), handler: { _ in
                 print("설정")
+                let settingViewController = SettingViewController()
+                self.navigationController?.pushViewController(settingViewController, animated: true)
             })
         ]
     }()
@@ -146,6 +149,7 @@ class CorrectionViewController: UIViewController {
                 self?.toggleButton(self?.frameButton)
                 self?.applyFrame()
                 self?.deselectButtons(except: self?.frameButton)
+                self?.showFrameViewSelectionView()
             })
             .disposed(by: disposeBag)
         
@@ -169,8 +173,8 @@ class CorrectionViewController: UIViewController {
     
     private func setupNavigationItem() {
         title = "보정"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "저장", style: .plain, target: self, action: nil)
-        navigationItem.rightBarButtonItem?.tintColor = UIColor.Yellow
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "checkmark"))
+        navigationItem.rightBarButtonItem?.tintColor = UIColor.BAA7E7
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"),
                                                                 menu: menu)
@@ -189,6 +193,7 @@ class CorrectionViewController: UIViewController {
     
     func applyFilter() {
         print("필터 버튼이 탭되었습니다.")
+        hideFameViewSelectionView()
     }
     
     func applyFrame() {
@@ -199,11 +204,13 @@ class CorrectionViewController: UIViewController {
     func adjustPhoto() {
         print("조정 버튼이 탭되었습니다.")
         hideFilterSelectionView()
+        hideFameViewSelectionView()
     }
     
     func applySticker() {
         print("스티커 버튼이 탭되었습니다.")
         hideFilterSelectionView()
+        hideFameViewSelectionView()
     }
     
     private func showFilterSelectionView() {
@@ -220,6 +227,30 @@ class CorrectionViewController: UIViewController {
         
         self.controlView.alpha = 1.0
         self.controlView.transform = CGAffineTransform.identity
+    }
+    
+    private func showFrameViewSelectionView() {
+        frameView.alpha = 0.0
+        view.addSubview(frameView)
+        view.bringSubviewToFront(bottomToolBar)
+        
+        frameView.snp.makeConstraints {
+            $0.left.trailing.bottom.equalToSuperview()
+            $0.height.equalTo(250.0)
+        }
+        
+        frameView.transform = CGAffineTransform(translationX: 0, y: 300)
+        
+        self.frameView.alpha = 1.0
+        self.frameView.transform = CGAffineTransform.identity
+    }
+    
+    private func hideFameViewSelectionView() {
+        UIView.animate(withDuration: 0.3) {
+            self.frameView.alpha = 0.0
+        } completion: { _ in
+            self.frameView.removeFromSuperview()
+        }
     }
     
     private func hideFilterSelectionView() {
