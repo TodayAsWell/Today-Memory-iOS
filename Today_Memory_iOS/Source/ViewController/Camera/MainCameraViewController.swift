@@ -29,10 +29,11 @@ class MainCameraViewController: UIViewController {
     }
     
     private let centerButton = UIButton(type: .system).then {
-        $0.backgroundColor = .white
-        $0.layer.borderWidth = 5
-        $0.layer.borderColor = UIColor.black.cgColor
-        $0.layer.cornerRadius = 40.0
+        let image = UIImage(named: "centerButton")
+        $0.setBackgroundImage(image, for: UIControl.State.normal)
+//        $0.layer.cornerRadius = 45.0
+//        $0.layer.borderWidth = 2
+//        $0.layer.borderColor = UIColor.white.cgColor
     }
     
     let styleButton = UIButton(type: .system).then {
@@ -42,7 +43,7 @@ class MainCameraViewController: UIViewController {
     }
     
     let correctionButton = UIButton(type: .system).then {
-        let image = UIImage(named: "CorrectionImage")
+        let image = UIImage(named: "BellImage")
         $0.setBackgroundImage(image, for: UIControl.State.normal)
         $0.layer.cornerRadius = 8.0
     }
@@ -209,7 +210,7 @@ class MainCameraViewController: UIViewController {
         
         if UIDevice.current.userInterfaceIdiom == .pad {
             cameraView.snp.makeConstraints {
-                $0.top.equalTo(view.safeAreaLayoutGuide)
+                $0.top.equalTo(view.safeAreaLayoutGuide).offset(53.0)
                 $0.centerX.equalToSuperview()
                 $0.width.equalToSuperview()
                 $0.height.equalTo(744.0)

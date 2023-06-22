@@ -10,6 +10,7 @@ class CorrectionViewController: UIViewController {
     
     private let controlView = ControlView()
     private let frameView = FrameView()
+//    private let stickerView =
     
     lazy var menuItems: [UIAction] = {
         return [
@@ -175,6 +176,19 @@ class CorrectionViewController: UIViewController {
         title = "보정"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "checkmark"))
         navigationItem.rightBarButtonItem?.tintColor = UIColor.BAA7E7
+        
+        navigationItem.rightBarButtonItem?.rx.tap
+            .subscribe(onNext: {
+                print("네비게이션 버튼이 클릭되었습니다.")
+                let finishVC = FinishViewController()
+
+                guard let navigationController = self.navigationController else {
+                    fatalError("Navigation controller not found.")
+                }
+
+                navigationController.pushViewController(finishVC, animated: true)
+            })
+            .disposed(by: disposeBag)
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"),
                                                                 menu: menu)

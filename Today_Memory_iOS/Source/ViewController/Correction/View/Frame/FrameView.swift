@@ -12,7 +12,7 @@ class FrameView: UIView {
         layout.itemSize = CGSize(width: 100, height: 220)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .red
+        collectionView.backgroundColor = .white
         collectionView.showsHorizontalScrollIndicator = false
         
         return collectionView
