@@ -165,11 +165,11 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
             .disposed(by: disposeBag)
         
         stickerButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                self?.toggleButton(self?.stickerButton)
-                self?.applySticker()
-                self?.deselectButtons(except: self?.stickerButton)
-                self?.showStickerViewSelectionView()
+            .subscribe(with: self, onNext: { owner, _  in
+                owner.toggleButton(owner.stickerButton)
+                owner.applySticker()
+                owner.deselectButtons(except: owner.stickerButton)
+                owner.showStickerViewSelectionView()
             })
             .disposed(by: disposeBag)
     }

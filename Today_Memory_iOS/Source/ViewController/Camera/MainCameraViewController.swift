@@ -3,6 +3,7 @@ import RxCocoa
 import RxSwift
 import SnapKit
 import Then
+import CoreMotion
 
 class MainCameraViewController: UIViewController {
     
@@ -11,6 +12,11 @@ class MainCameraViewController: UIViewController {
     var isOn = false
     var gridOn = false
     var touchShootOn = false
+    
+    var motionManager: CMMotionManager!
+    var currentAngleH: Float = 0.0
+    var currentAngleY: Float = 0.0
+    var isSkyShot = false
     
     private let filterSelectionView = FilterSelectionView()
     
@@ -114,7 +120,44 @@ class MainCameraViewController: UIViewController {
         filterSelectionView.frame = CGRect(x: 0, y: view.frame.height, width: view.frame.width, height: 270)
 
         setupUI()
-        
+        configureDeviceMotion()
+    }
+    
+    func configureDeviceMotion() {
+        motionManager = CMMotionManager()
+        motionManager.deviceMotionUpdateInterval = 0.01
+        motionManager.startDeviceMotionUpdates(using: .xArbitraryZVertical, to: .main, withHandler: { (motion, error) in
+            guard let deviceMotion = motion else { return }
+            
+            let attitude = deviceMotion.attitude
+            let x = attitude.roll * (180 / .pi)
+            let roundedX = Float(round(x * 100)) / 100.0
+            let currentAngleY = attitude.pitch * (180 / .pi)
+
+            self.currentAngleH = roundedX * 90
+
+            // 항공샷 모드 활성화/비활성화 및 UI 변경 코드 추가
+            if (-90 < self.currentAngleH && self.currentAngleH < 90
+                    && -15 < currentAngleY && currentAngleY < 15) {
+                
+                // 항공샷 모드 활성화 및 관련 UI 변경 코드 추가
+                self.view.subviews.forEach { subview in
+                    if subview != self.centerButton && subview != self.cameraView {
+                        subview.backgroundColor = .red
+                        self.view.backgroundColor = .red
+                    }
+                }
+            } else {
+                
+                // 항공샷 모드 비활성화 및 UI 원상복구 코드 추가
+                self.view.subviews.forEach { subview in
+                    if subview != self.centerButton && subview != self.cameraView {
+                        subview.backgroundColor = .clear // or 원래의 색상으로 변경, 예) .white, .blue 등
+                        self.view.backgroundColor = .white
+                    }
+                }
+            }
+        })
     }
     
     @objc func handlePinchGesture(_ gesture: UIPinchGestureRecognizer) {
