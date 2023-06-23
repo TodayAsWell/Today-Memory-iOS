@@ -163,6 +163,9 @@ class MainCameraViewController: UIViewController {
                             self.view.layer.insertSublayer(gradientLayer, at: 0)
                         }
                         
+                        self.navigationItem.rightBarButtonItem?.tintColor = .white
+                        self.navigationItem.leftBarButtonItem?.tintColor = .white
+                        
                         self.styleButton.isHidden = true
                         self.correctionButton.isHidden = true
                         self.effectButton.isHidden = true
@@ -187,6 +190,9 @@ class MainCameraViewController: UIViewController {
                         if let gradientLayer = self.view.layer.sublayers?.first(where: { $0 is CAGradientLayer }) {
                             gradientLayer.removeFromSuperlayer()
                         }
+                        
+                        self.navigationItem.rightBarButtonItem?.tintColor = .black
+                        self.navigationItem.leftBarButtonItem?.tintColor = .black
                         
                         self.view.backgroundColor = .white
                                                 
