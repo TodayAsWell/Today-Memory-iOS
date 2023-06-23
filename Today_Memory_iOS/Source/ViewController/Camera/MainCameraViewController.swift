@@ -106,7 +106,6 @@ class MainCameraViewController: UIViewController {
     
     private let navCenterButton = UIButton(type: .system).then {
         $0.setImage(UIImage(named: "aspectRatioButton"), for: .normal)
-        $0.addTarget(self, action: #selector(navCenterButtonTapped), for: .touchUpInside)
     }
 
     
@@ -136,6 +135,7 @@ class MainCameraViewController: UIViewController {
         configureDeviceMotion()
         
         self.navigationItem.titleView = navCenterButton
+        navCenterButton.addTarget(self, action: #selector(navCenterButtonTapped), for: .touchUpInside)
     }
     
     @objc func navCenterButtonTapped() {
@@ -184,9 +184,6 @@ class MainCameraViewController: UIViewController {
                         self.filterButton.isHidden = true
                         self.toggleButtonStackView.isHidden = true
                         
-                        self.navCenterButton.setImage(UIImage(named: "aspectRatioButton"), for: .normal)
-                        self.navigationItem.titleView = self.navCenterButton
-                        
                         self.centerButton.setBackgroundImage(UIImage(named: "180Button"), for: UIControl.State.normal)
                         
                         self.view.addSubview(self.underWarningTitle)
@@ -208,9 +205,6 @@ class MainCameraViewController: UIViewController {
                         
                         self.navigationItem.rightBarButtonItem?.tintColor = .black
                         self.navigationItem.leftBarButtonItem?.tintColor = .black
-                        
-                        self.navCenterButton.setImage(UIImage(named: "whiteAspectRatioButton"), for: .normal)
-                        self.navigationItem.titleView = self.navCenterButton
                         
                         self.view.backgroundColor = .white
                                                 
