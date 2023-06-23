@@ -295,7 +295,7 @@ class MainCameraViewController: UIViewController {
     private func setupUI() {
         view.addSubview(filterSelectionView)
 
-        styleButton.rx.tap
+        filterButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 self?.showFilterSelectionView()
             })

@@ -11,7 +11,7 @@ class FilterCollectionViewCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.borderWidth = 0
-        imageView.layer.cornerRadius = 25
+        imageView.layer.cornerRadius = 32
         return imageView
     }()
     
@@ -42,7 +42,7 @@ class FilterCollectionViewCell: UICollectionViewCell {
         imageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().offset(10)
-            make.width.height.equalTo(50)
+            make.width.height.equalTo(64)
         }
         
         contentView.addSubview(titleLabel)
