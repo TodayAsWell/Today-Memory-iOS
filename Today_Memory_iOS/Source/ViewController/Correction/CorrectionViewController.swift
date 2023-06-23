@@ -35,6 +35,13 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
         return UIMenu(title: "", options: [], children: menuItems)
     }()
     
+    private var mainFrameView = UIView().then {
+        $0.backgroundColor = .clear
+    }
+    
+    private var userImageView = UIImageView().then {
+        $0.image = UIImage(named: "exexImage")
+    }
     
     private var exImage = UIImageView().then {
         $0.image = UIImage(named: "ExPolaroid")
@@ -100,17 +107,37 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
     override func viewDidLoad() {
         setupNavigationItem()
         
+        frameView.delegate = self
         stickerView.delegate = self
             
         view.backgroundColor = .F6F6F8
         
+        view.addSubview(mainFrameView)
+        view.addSubview(userImageView)
         view.addSubview(exImage)
-        exImage.snp.makeConstraints {
+        
+        mainFrameView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(40.0)
             $0.centerX.equalToSuperview()
             $0.width.equalTo(504)
             $0.height.equalTo(648)
         }
+        
+        userImageView.snp.makeConstraints {
+            $0.top.equalTo(mainFrameView.snp.top).offset(30)
+            $0.centerX.equalTo(mainFrameView.snp.centerX)
+            $0.height.equalTo(462.0)
+            $0.width.equalTo(443.0)
+        }
+        
+        exImage.snp.makeConstraints {
+            $0.top.equalTo(mainFrameView.snp.top)
+            $0.centerX.equalTo(mainFrameView.snp.centerX)
+            $0.width.equalTo(504)
+            $0.height.equalTo(648)
+        }
+        
+        
         view.addSubview(bottomToolBar)
         view.addSubview(emptyView1)
         view.addSubview(emptyView2)
@@ -378,4 +405,11 @@ extension CorrectionViewController {
     }
 
 
+}
+
+
+extension CorrectionViewController: FrameViewDelegate {
+    func didSelectFrameImage(image: UIImage) {
+        exImage.image = image
+    }
 }

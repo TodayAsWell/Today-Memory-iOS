@@ -4,7 +4,14 @@ import RxCocoa
 import Then
 import SnapKit
 
+protocol FrameViewDelegate: AnyObject {
+    func didSelectFrameImage(image: UIImage)
+}
+
 class FrameView: UIView {
+    
+    weak var delegate: FrameViewDelegate?
+    
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -58,11 +65,31 @@ extension FrameView: UICollectionViewDelegate, UICollectionViewDataSource {
         cell.imageView.image = UIImage(named: "FameImage")
         cell.titleLabel.text = "Flower"
         
+        if indexPath.row == 1 {
+            cell.imageView.image = UIImage(named: "EXBlackDesignFrame")
+            cell.titleLabel.text = "balckPainting"
+        }
+        
+        
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         print("index \(indexPath.row)")
+        var selectedImage = UIImage(named: "ExPolaroid")
+        
+        switch indexPath.row {
+        case 0:
+            selectedImage = UIImage(named: "ExPolaroid")
+            delegate?.didSelectFrameImage(image: selectedImage!)
+        case 1:
+            selectedImage = UIImage(named: "blackDesignFrame")
+            delegate?.didSelectFrameImage(image: selectedImage!)
+            
+        default:
+            selectedImage = UIImage(named: "ExPolaroid")
+            delegate?.didSelectFrameImage(image: selectedImage!)
+        }
     }
 }
