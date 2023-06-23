@@ -104,6 +104,12 @@ class MainCameraViewController: UIViewController {
         $0.layer.cornerRadius = 19.0
     }
     
+    private let navCenterButton = UIButton(type: .system).then {
+        $0.setImage(UIImage(named: "aspectRatioButton"), for: .normal)
+        $0.addTarget(self, action: #selector(navCenterButtonTapped), for: .touchUpInside)
+    }
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -128,6 +134,12 @@ class MainCameraViewController: UIViewController {
 
         setupUI()
         configureDeviceMotion()
+        
+        self.navigationItem.titleView = navCenterButton
+    }
+    
+    @objc func navCenterButtonTapped() {
+        print("네비게이션 가운데 버튼이 눌렸습니다.")
     }
     
     func configureDeviceMotion() {
@@ -172,6 +184,9 @@ class MainCameraViewController: UIViewController {
                         self.filterButton.isHidden = true
                         self.toggleButtonStackView.isHidden = true
                         
+                        self.navCenterButton.setImage(UIImage(named: "aspectRatioButton"), for: .normal)
+                        self.navigationItem.titleView = self.navCenterButton
+                        
                         self.centerButton.setBackgroundImage(UIImage(named: "180Button"), for: UIControl.State.normal)
                         
                         self.view.addSubview(self.underWarningTitle)
@@ -193,6 +208,9 @@ class MainCameraViewController: UIViewController {
                         
                         self.navigationItem.rightBarButtonItem?.tintColor = .black
                         self.navigationItem.leftBarButtonItem?.tintColor = .black
+                        
+                        self.navCenterButton.setImage(UIImage(named: "whiteAspectRatioButton"), for: .normal)
+                        self.navigationItem.titleView = self.navCenterButton
                         
                         self.view.backgroundColor = .white
                                                 
