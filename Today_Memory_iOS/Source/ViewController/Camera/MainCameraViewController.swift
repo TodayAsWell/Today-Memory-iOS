@@ -34,6 +34,13 @@ class MainCameraViewController: UIViewController {
         
     }
     
+    private lazy var underWarningTitle = UILabel().then {
+        $0.text = "화면을 띄워주세요!"
+        $0.font = .systemFont(ofSize: 16, weight: .medium)
+        $0.numberOfLines = 1
+        $0.textColor = .white
+    }
+    
     private let centerButton = UIButton(type: .system).then {
         let image = UIImage(named: "centerButton")
         $0.setBackgroundImage(image, for: UIControl.State.normal)
@@ -141,26 +148,57 @@ class MainCameraViewController: UIViewController {
                 
                 self.view.subviews.forEach { subview in
                     if subview != self.centerButton && subview != self.cameraView {
-                        let startColor = UIColor(red: 151 / 255, green: 149 / 255, blue: 240 / 255, alpha: 1.0).cgColor
-                        let endColor = UIColor(red: 210 / 255, green: 179 / 255, blue: 224 / 255, alpha: 1.0).cgColor
+                        if self.view.layer.sublayers?.first(where: { $0 is CAGradientLayer }) == nil {
+                            let startColor = UIColor(red: 151 / 255, green: 149 / 255, blue: 240 / 255, alpha: 1.0).cgColor
+                            let endColor = UIColor(red: 210 / 255, green: 179 / 255, blue: 224 / 255, alpha: 1.0).cgColor
+                            
+                            let gradientLayer = CAGradientLayer()
+                            
+                            gradientLayer.frame = self.view.bounds
+                            
+                            gradientLayer.colors = [startColor, endColor]
+                            gradientLayer.startPoint = CGPoint(x: 0, y: 0.5)
+                            gradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
+                            
+                            self.view.layer.insertSublayer(gradientLayer, at: 0)
+                        }
                         
-                        let gradientLayer = CAGradientLayer()
+                        self.styleButton.isHidden = true
+                        self.correctionButton.isHidden = true
+                        self.effectButton.isHidden = true
+                        self.filterButton.isHidden = true
+                        self.toggleButtonStackView.isHidden = true
                         
-                        gradientLayer.frame = self.view.bounds
+                        self.centerButton.setBackgroundImage(UIImage(named: "180Button"), for: UIControl.State.normal)
                         
-                        gradientLayer.colors = [startColor, endColor]
-                        gradientLayer.startPoint = CGPoint(x: 0, y: 0.5)
-                        gradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
+                        self.view.addSubview(self.underWarningTitle)
                         
-                        self.view.layer.insertSublayer(gradientLayer, at: 0)
+                        self.underWarningTitle.snp.makeConstraints {
+                            $0.top.equalTo(self.centerButton.snp.top).offset(-40.0)
+                            $0.centerX.equalToSuperview()
+                        }
                     }
                 }
             } else {
                 
                 self.view.subviews.forEach { subview in
                     if subview != self.centerButton && subview != self.cameraView {
-                        subview.backgroundColor = .clear
+                        
+                        if let gradientLayer = self.view.layer.sublayers?.first(where: { $0 is CAGradientLayer }) {
+                            gradientLayer.removeFromSuperlayer()
+                        }
+                        
                         self.view.backgroundColor = .white
+                                                
+                        self.styleButton.isHidden = false
+                        self.correctionButton.isHidden = false
+                        self.effectButton.isHidden = false
+                        self.filterButton.isHidden = false
+                        self.toggleButtonStackView.isHidden = false
+                        
+                        self.underWarningTitle.removeFromSuperview()
+                        
+                        self.centerButton.setBackgroundImage(UIImage(named: "centerButton"), for: UIControl.State.normal)
                     }
                 }
             }
