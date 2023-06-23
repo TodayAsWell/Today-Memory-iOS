@@ -49,18 +49,18 @@ class MainCameraViewController: UIViewController {
 //        $0.layer.borderColor = UIColor.white.cgColor
     }
     
+    let correctionButton = UIButton(type: .system).then {
+        let image = UIImage(named: "correctionImage")
+        $0.setBackgroundImage(image, for: UIControl.State.normal)
+        $0.layer.cornerRadius = 8.0
+    }
+    
     let styleButton = UIButton(type: .system).then {
         let image = UIImage(named: "StyleImage")
         $0.setBackgroundImage(image, for: UIControl.State.normal)
         $0.layer.cornerRadius = 8.0
     }
     
-    let correctionButton = UIButton(type: .system).then {
-        let image = UIImage(named: "BellImage")
-        $0.setBackgroundImage(image, for: UIControl.State.normal)
-        $0.layer.cornerRadius = 8.0
-    }
-
     let effectButton = UIButton(type: .system).then {
         let image = UIImage(named: "EffectImage")
         $0.setBackgroundImage(image, for: UIControl.State.normal)
@@ -234,7 +234,7 @@ class MainCameraViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), style: .plain, target: self, action: #selector(ellipsisButtonTap(_:)))
     }
     
-    private func configureButtonContainer(button: UIButton, label: UILabel) -> UIStackView {
+    private func configureButtonContainer(button: UIButton, label: UILabel, text: String) -> UIStackView {
         let buttonContainer = UIStackView()
         buttonContainer.axis = .vertical
         buttonContainer.alignment = .center
@@ -244,7 +244,7 @@ class MainCameraViewController: UIViewController {
             $0.width.height.equalTo(48)
         }
         
-        label.text = "보정"
+        label.text = text
         label.font = UIFont.systemFont(ofSize: 15)
         label.textAlignment = .center
         
@@ -255,32 +255,31 @@ class MainCameraViewController: UIViewController {
     }
     
     private func configureStackView() {
-
-        let styleButton = styleButton
-        let styleLabel = UILabel()
-        
-        let styleLabelButtonContainer = configureButtonContainer(button: styleButton, label: styleLabel)
         
         let correctionButton = correctionButton
         let correctionLabel = UILabel()
         
-        let correctionLabelButtonContainer = configureButtonContainer(button: correctionButton, label: correctionLabel)
+        let correctionLabelButtonContainer = configureButtonContainer(button: correctionButton, label: correctionLabel, text: "보정")
+
+        let styleButton = styleButton
+        let styleLabel = UILabel()
+        
+        let styleLabelButtonContainer = configureButtonContainer(button: styleButton, label: styleLabel, text: "스타일")
         
         
         let effectButton = effectButton
         let effectLabel = UILabel()
         
-        let effectLabelButtonContainer = configureButtonContainer(button: effectButton, label: effectLabel)
+        let effectLabelButtonContainer = configureButtonContainer(button: effectButton, label: effectLabel, text: "효과")
         
         let filterButton = filterButton
         let filterLabel = UILabel()
         
-        let filterButtonContainer = configureButtonContainer(button: filterButton, label: filterLabel)
+        let filterButtonContainer = configureButtonContainer(button: filterButton, label: filterLabel, text: "필터")
         
         
-        
-        stackView.addArrangedSubview(styleLabelButtonContainer)
         stackView.addArrangedSubview(correctionLabelButtonContainer)
+        stackView.addArrangedSubview(styleLabelButtonContainer)
         stackView.addArrangedSubview(centerButton)
         stackView.addArrangedSubview(effectLabelButtonContainer)
         stackView.addArrangedSubview(filterButtonContainer)
