@@ -136,23 +136,30 @@ class MainCameraViewController: UIViewController {
 
             self.currentAngleH = roundedX * 90
 
-            // 항공샷 모드 활성화/비활성화 및 UI 변경 코드 추가
             if (-90 < self.currentAngleH && self.currentAngleH < 90
                     && -15 < currentAngleY && currentAngleY < 15) {
                 
-                // 항공샷 모드 활성화 및 관련 UI 변경 코드 추가
                 self.view.subviews.forEach { subview in
                     if subview != self.centerButton && subview != self.cameraView {
-                        subview.backgroundColor = .red
-                        self.view.backgroundColor = .red
+                        let startColor = UIColor(red: 151 / 255, green: 149 / 255, blue: 240 / 255, alpha: 1.0).cgColor
+                        let endColor = UIColor(red: 210 / 255, green: 179 / 255, blue: 224 / 255, alpha: 1.0).cgColor
+                        
+                        let gradientLayer = CAGradientLayer()
+                        
+                        gradientLayer.frame = self.view.bounds
+                        
+                        gradientLayer.colors = [startColor, endColor]
+                        gradientLayer.startPoint = CGPoint(x: 0, y: 0.5)
+                        gradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
+                        
+                        self.view.layer.insertSublayer(gradientLayer, at: 0)
                     }
                 }
             } else {
                 
-                // 항공샷 모드 비활성화 및 UI 원상복구 코드 추가
                 self.view.subviews.forEach { subview in
                     if subview != self.centerButton && subview != self.cameraView {
-                        subview.backgroundColor = .clear // or 원래의 색상으로 변경, 예) .white, .blue 등
+                        subview.backgroundColor = .clear
                         self.view.backgroundColor = .white
                     }
                 }
