@@ -407,7 +407,6 @@ extension CorrectionViewController {
 
 }
 
-
 extension CorrectionViewController: FrameViewDelegate {
     func didSelectFrameImage(image: UIImage) {
         exImage.image = image
