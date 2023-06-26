@@ -10,6 +10,13 @@ protocol SendDataDelegate {
 
 class StickerView: UIView {
     
+    let categorySegmentedControl: UISegmentedControl = {
+        let segmentedControl = UISegmentedControl(items: ["전체", "감정", "식물", "사람"])
+        segmentedControl.addTarget(self, action: #selector(categorySegmentedControlValueChanged), for: .valueChanged)
+        return segmentedControl
+    }()
+
+    
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -31,7 +38,7 @@ class StickerView: UIView {
         return button
     }()
     
-    var cellData = ["blackHartSticker","blackFlowerSticker","blackJapaneseFlower","pinkHartSticker","pinkFlowerSticker","pinkJapaneseFlower","purpleHartSticker","purpleFlowerSticker","purpleJapaneseFlower","gradationHartSticker","gradationFlowerSticker","gradationJapaneseFlower", "goodWonjunSticker"] {
+    var cellData = ["blackHartSticker","blackFlowerSticker","blackJapaneseFlower","pinkHartSticker","pinkFlowerSticker","pinkJapaneseFlower","purpleHartSticker","purpleFlowerSticker","purpleJapaneseFlower","gradationHartSticker","gradationFlowerSticker","gradationJapaneseFlower", "goodWonjunSticker", "재하"] {
         didSet {
             collectionView.reloadData()
         }
@@ -52,14 +59,20 @@ class StickerView: UIView {
     
     private func setupUI() {
         backgroundColor = .white
-        
+
+        addSubview(categorySegmentedControl)
+        categorySegmentedControl.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(20)
+            $0.top.equalToSuperview().offset(20)
+        }
+
         addSubview(collectionView)
         collectionView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.top.equalToSuperview().offset(20)
-            $0.height.equalTo(220)
+            $0.top.equalTo(categorySegmentedControl.snp.bottom).offset(10)
+            $0.bottom.equalToSuperview()
         }
-        
+
         addSubview(closeButton)
         closeButton.snp.makeConstraints {
             $0.top.equalToSuperview().offset(20)
@@ -71,6 +84,25 @@ class StickerView: UIView {
         removeFromSuperview()
     }
     
+    @objc private func categorySegmentedControlValueChanged() {
+        switch categorySegmentedControl.selectedSegmentIndex {
+        case 0:
+            //모두 보기
+            cellData = ["blackHartSticker","blackFlowerSticker","blackJapaneseFlower","pinkHartSticker","pinkFlowerSticker","pinkJapaneseFlower","purpleHartSticker","purpleFlowerSticker","purpleJapaneseFlower","gradationHartSticker","gradationFlowerSticker","gradationJapaneseFlower", "goodWonjunSticker", "재하"]
+        case 1:
+            //감정
+            cellData = ["pinkHartSticker","blackHartSticker","purpleHartSticker", "gradationHartSticker"]
+        case 2:
+            //식물
+            cellData = ["pinkFlowerSticker", "blackFlowerSticker", "purpleFlowerSticker", "gradationJapaneseFlower", "pinkJapaneseFlower" , "blackJapaneseFlower", "purpleJapaneseFlower", "gradationJapaneseFlower"]
+        case 3:
+            //사람
+            cellData = ["goodWonjunSticker", "재하"]
+        default:
+            break
+        }
+        
+    }
     
     private func setupCollectionView() {
         collectionView.delegate = self
@@ -78,7 +110,6 @@ class StickerView: UIView {
         collectionView.register(StickerCollectionViewCell.self, forCellWithReuseIdentifier: StickerCollectionViewCell.id)
         
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-//            layout.minimumInteritemSpacing = 20
             layout.sectionInset = UIEdgeInsets(top: 0, left: 42, bottom: 0, right: 42)
         }
     }
