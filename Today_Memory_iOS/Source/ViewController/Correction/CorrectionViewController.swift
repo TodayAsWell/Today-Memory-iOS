@@ -25,6 +25,7 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
             UIAction(title: "초기화", image: UIImage(systemName: "arrow.clockwise"), handler: { _ in
                 print("초기화")
                 self.removeAllStickers()
+                self.removeAlltextField()
             }),
             UIAction(title: "설정", image: UIImage(systemName: "gearshape.fill"), handler: { _ in
                 print("설정")
@@ -436,7 +437,7 @@ extension CorrectionViewController {
     @objc func addTextToExImage() {
         let textField = UITextField(frame: CGRect(x: exImage.bounds.midX - 100, y: exImage.bounds.midY - 15, width: 200, height: 30))
         textField.center = exImage.convert(exImage.center, from: exImage.superview)
-        textField.borderStyle = .none
+        textField.borderStyle = .roundedRect
         textField.placeholder = "텍스트를 입력하십시오."
 
         // Add gesture recognizers to the text field
@@ -470,6 +471,7 @@ extension CorrectionViewController {
 
         gestureView.center = CGPoint(x: min(max(minX, newX), maxX), y: min(max(minY, newY), maxY))
         gesture.setTranslation(.zero, in: exImage)
+        
     }
 
     @objc func handleTextFieldPinchGesture(_ gesture: UIPinchGestureRecognizer) {
@@ -477,6 +479,7 @@ extension CorrectionViewController {
             return
         }
 
+        //현재 되지 않음
         gestureView.transform = gestureView.transform.scaledBy(x: gesture.scale, y: gesture.scale)
         gesture.scale = 1
     }
@@ -502,6 +505,14 @@ extension CorrectionViewController {
         alert.addAction(ok)
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func removeAlltextField() {
+        for view in exImage.subviews {
+            if view is UIImageView || view is UITextField {
+                view.removeFromSuperview()
+            }
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
