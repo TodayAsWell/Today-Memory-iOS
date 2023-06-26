@@ -113,6 +113,11 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
     }
     
     override func viewDidLoad() {
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(addTextToExImage))
+        exImage.addGestureRecognizer(tapGestureRecognizer)
+        exImage.isUserInteractionEnabled = true
+        
         setupNavigationItem()
         
         frameView.delegate = self
@@ -426,3 +431,81 @@ extension CorrectionViewController: FrameViewDelegate {
         exImage.image = image
     }
 }
+
+extension CorrectionViewController {
+    @objc func addTextToExImage() {
+        let textField = UITextField(frame: CGRect(x: exImage.bounds.midX - 100, y: exImage.bounds.midY - 15, width: 200, height: 30))
+        textField.center = exImage.convert(exImage.center, from: exImage.superview)
+        textField.borderStyle = .none
+        textField.placeholder = "텍스트를 입력하십시오."
+
+        // Add gesture recognizers to the text field
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handleTextFieldPanGesture(_:)))
+        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(handleTextFieldPinchGesture(_:)))
+        let rotateGesture = UIRotationGestureRecognizer(target: self, action: #selector(handleTextFieldRotateGesture(_:)))
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleTextFieldLongPressGesture(_:)))
+
+        [panGesture, pinchGesture, rotateGesture, longPressGesture].forEach {
+            $0.delegate = self
+            textField.addGestureRecognizer($0)
+        }
+
+        exImage.addSubview(textField)
+    }
+
+    @objc func handleTextFieldPanGesture(_ gesture: UIPanGestureRecognizer) {
+        let translation = gesture.translation(in: exImage)
+
+        guard let gestureView = gesture.view else {
+            return
+        }
+
+        let newX = gestureView.center.x + translation.x
+        let newY = gestureView.center.y + translation.y
+
+        let minX = gestureView.frame.width / 2
+        let minY = gestureView.frame.height / 2
+        let maxX = exImage.bounds.width - minX
+        let maxY = exImage.bounds.height - minY
+
+        gestureView.center = CGPoint(x: min(max(minX, newX), maxX), y: min(max(minY, newY), maxY))
+        gesture.setTranslation(.zero, in: exImage)
+    }
+
+    @objc func handleTextFieldPinchGesture(_ gesture: UIPinchGestureRecognizer) {
+        guard let gestureView = gesture.view else {
+            return
+        }
+
+        gestureView.transform = gestureView.transform.scaledBy(x: gesture.scale, y: gesture.scale)
+        gesture.scale = 1
+    }
+
+    @objc func handleTextFieldRotateGesture(_ gesture: UIRotationGestureRecognizer) {
+        guard let gestureView = gesture.view else {
+            return
+        }
+
+        gestureView.transform = gestureView.transform.rotated(by: gesture.rotation)
+        gesture.rotation = 0
+    }
+
+    @objc func handleTextFieldLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
+        if gesture.state != .ended {
+            return
+        }
+
+        let alert = UIAlertController(title: "해당 텍스트를 삭제하시겠습니까?", message: "", preferredStyle: .alert)
+        let ok = UIAlertAction(title: "삭제", style: .destructive) { _ in
+            gesture.view?.removeFromSuperview()
+        }
+        alert.addAction(ok)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
+}
+
