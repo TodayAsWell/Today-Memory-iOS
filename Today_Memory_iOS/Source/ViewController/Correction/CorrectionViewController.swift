@@ -12,6 +12,8 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
     private let frameView = FrameView()
     private let stickerView = StickerView()
     
+    var delegate: SendDataDelegate?
+    
     lazy var menuItems: [UIAction] = {
         return [
             UIAction(title: "이전", image: UIImage(systemName: "arrow.uturn.left"), handler: { _ in
@@ -22,6 +24,7 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
             }),
             UIAction(title: "초기화", image: UIImage(systemName: "arrow.clockwise"), handler: { _ in
                 print("초기화")
+                self.removeAllStickers()
             }),
             UIAction(title: "설정", image: UIImage(systemName: "gearshape.fill"), handler: { _ in
                 print("설정")
@@ -103,6 +106,11 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
         $0.backgroundColor = .white
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let correctionViewController = segue.destination as? CorrectionViewController {
+            correctionViewController.delegate = self
+        }
+    }
     
     override func viewDidLoad() {
         setupNavigationItem()
@@ -404,7 +412,13 @@ extension CorrectionViewController {
         }
     }
 
-
+    func removeAllStickers() {
+        for view in exImage.subviews {
+            if view is UIImageView {
+                view.removeFromSuperview()
+            }
+        }
+    }
 }
 
 extension CorrectionViewController: FrameViewDelegate {

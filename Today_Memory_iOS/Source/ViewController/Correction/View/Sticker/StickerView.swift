@@ -6,6 +6,7 @@ import SnapKit
 
 protocol SendDataDelegate {
     func sendData(image:UIImage)
+    func removeAllStickers()
 }
 
 class StickerView: UIView {
