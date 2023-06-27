@@ -14,7 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        let finishViewController = assembleFinishModule()
+        let finishViewController = assembleSettingModule()
         
         let navigationController = UINavigationController(rootViewController: finishViewController)
 
@@ -30,6 +30,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let interactor = FinishInteractor()
         let presenter = FinishPresenter()
         let router = FinishRouter()
+        
+        viewController.presenter = presenter
+        presenter.view = viewController
+        
+        presenter.interactor = interactor
+        interactor.output = presenter
+        
+        presenter.router = router
+        router.viewController = viewController
+        
+        return viewController
+    }
+    
+    func assembleSettingModule() -> SettingViewController {
+        let viewController = SettingViewController()
+        
+        let interactor = SettingInteractor()
+        let presenter = SettingPresenter()
+        let router = SettingRouter()
         
         viewController.presenter = presenter
         presenter.view = viewController

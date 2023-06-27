@@ -1,16 +1,20 @@
 import UIKit
 import SnapKit
 
-class SettingViewController: UIViewController {
-
+// ViewController (View)
+class SettingViewController: UIViewController, SettingViewInterface {
+    var presenter: SettingPresenterInterface!
+    
     private var tableView = UITableView()
-
     private let sectionHeader = ["일반", "기타"]
     private let cellDataSource = [["어쩌고저쩌고", "어쩌고저쩌고", "어쩌고저쩌고"], ["정보", "어쩌고저쩌고"]]
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        presenter.viewDidLoad()
+    }
+
+    func setupNavigationItem() {
         title = "설정"
         
         if #available(iOS 13.0, *) {
@@ -21,12 +25,9 @@ class SettingViewController: UIViewController {
         } else {
             navigationController?.navigationBar.barTintColor = .white
         }
-        
-        setupTableView()
-        setupConstraints()
     }
-
-    private func setupTableView() {
+    
+    func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SettingCell")
@@ -37,7 +38,7 @@ class SettingViewController: UIViewController {
         tableView.rowHeight = 60.0
     }
 
-    private func setupConstraints() {
+    func setupConstraints() {
         tableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -52,18 +53,18 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
-        
+
         let label = UILabel()
         label.text = sectionHeader[section]
         label.font = UIFont.systemFont(ofSize: 20, weight: .thin)
         label.textColor = .black
-        
+
         headerView.addSubview(label)
         label.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
             make.centerY.equalToSuperview()
         }
-        
+
         return headerView
     }
 
@@ -77,7 +78,7 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SettingCell", for: indexPath)
-        
+
         if indexPath.section == 0 {
             let switchView = UISwitch()
             switchView.onTintColor = .BAA7E7
@@ -85,9 +86,9 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
         } else if indexPath.section == 1 {
             cell.accessoryType = .disclosureIndicator
         }
-        
+
         cell.textLabel?.text = cellDataSource[indexPath.section][indexPath.row]
-        
+
         return cell
     }
 }
