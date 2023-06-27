@@ -14,9 +14,13 @@ class StickerView: UIView {
     let categorySegmentedControl: UISegmentedControl = {
         let segmentedControl = UISegmentedControl(items: ["전체", "감정", "식물", "사람"])
         segmentedControl.addTarget(self, action: #selector(categorySegmentedControlValueChanged), for: .valueChanged)
+
+        segmentedControl.addUnderlineForSelectedSegment()
+        segmentedControl.apportionsSegmentWidthsByContent = true
+        segmentedControl.backgroundColor = .red
+        
         return segmentedControl
     }()
-
     
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -50,6 +54,11 @@ class StickerView: UIView {
         super.init(frame: frame)
         setupUI()
         setupCollectionView()
+
+        for index in 0..<categorySegmentedControl.numberOfSegments {
+            let segmentWidth = UIScreen.main.bounds.width / 10.0
+            categorySegmentedControl.setWidth(segmentWidth, forSegmentAt: index)
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

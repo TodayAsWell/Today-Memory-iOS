@@ -440,7 +440,6 @@ extension CorrectionViewController {
         textField.borderStyle = .roundedRect
         textField.placeholder = "텍스트를 입력하십시오."
 
-        // Add gesture recognizers to the text field
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handleTextFieldPanGesture(_:)))
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(handleTextFieldPinchGesture(_:)))
         let rotateGesture = UIRotationGestureRecognizer(target: self, action: #selector(handleTextFieldRotateGesture(_:)))
@@ -519,4 +518,3 @@ extension CorrectionViewController {
         view.endEditing(true)
     }
 }
-
