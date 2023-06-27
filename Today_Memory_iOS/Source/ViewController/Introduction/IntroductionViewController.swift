@@ -15,6 +15,7 @@ class IntroductionViewController: UIViewController, UIScrollViewDelegate {
         $0.titleLabel?.font = .systemFont(ofSize: 16.0, weight: .medium)
         $0.backgroundColor = .Yellow
     }
+    
     var pageControl = UIPageControl()
     
     var currentPage: Int = 0 {
@@ -63,7 +64,6 @@ class IntroductionViewController: UIViewController, UIScrollViewDelegate {
         view.addSubview(mainCollectionView)
         view.addSubview(pageControl)
         view.addSubview(nextButton)
-        
         
         if UIDevice.current.userInterfaceIdiom == .pad {
             mainCollectionView.snp.makeConstraints {
@@ -162,7 +162,6 @@ extension IntroductionViewController {
     }
 }
 
-
 extension IntroductionViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return introductionData.count
@@ -189,7 +188,6 @@ extension IntroductionViewController: UICollectionViewDelegate, UICollectionView
     }
 }
 
-// MARK: - CollectionView Delegate Flow Layout
 extension IntroductionViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)

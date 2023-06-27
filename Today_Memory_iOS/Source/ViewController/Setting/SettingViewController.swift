@@ -44,7 +44,6 @@ class SettingViewController: UIViewController {
     }
 }
 
-
 extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
