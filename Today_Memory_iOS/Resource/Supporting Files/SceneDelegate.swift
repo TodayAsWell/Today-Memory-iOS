@@ -15,8 +15,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let finishViewController = assembleSettingModule()
+        let correctionViewController = CorrectionViewController()
         
-        let navigationController = UINavigationController(rootViewController: finishViewController)
+        let navigationController = UINavigationController(rootViewController: correctionViewController)
 
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = navigationController

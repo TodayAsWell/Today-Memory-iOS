@@ -120,12 +120,12 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
         exImage.isUserInteractionEnabled = true
         
         setupNavigationItem()
-        
-        frameView.delegate = self
-        stickerView.delegate = self
-            
-        view.backgroundColor = .F6F6F8
-        
+        layout()
+        setupButton()
+        setupConstraints()
+    }
+    
+    func layout() {
         view.addSubview(mainFrameView)
         view.addSubview(userImageView)
         view.addSubview(exImage)
@@ -177,7 +177,16 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
         emptyView2.snp.makeConstraints {
             $0.width.equalTo(emptyView1)
         }
-        
+    }
+    
+    func setupConstraints() {
+        frameView.delegate = self
+        stickerView.delegate = self
+            
+        view.backgroundColor = .F6F6F8
+    }
+    
+    func setupButton() {
         filterButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 self?.toggleButton(self?.filterButton)
@@ -215,8 +224,7 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
             .disposed(by: disposeBag)
     }
     
-    
-    private func setupNavigationItem() {
+    func setupNavigationItem() {
         title = "보정"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "checkmark"))
         navigationItem.rightBarButtonItem?.tintColor = UIColor.BAA7E7
