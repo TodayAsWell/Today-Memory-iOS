@@ -29,7 +29,7 @@ class FinishViewController: UIViewController, FinishViewInterface {
         presenter.viewDidLoad()
         
         downloadButton.rx.tap
-            .subscribe(onNext: { [weak self] _ in
+            .subscribe(with: self, onNext: { owner, _  in
                 print("Download button tapped")
             })
             .disposed(by: disposeBag)

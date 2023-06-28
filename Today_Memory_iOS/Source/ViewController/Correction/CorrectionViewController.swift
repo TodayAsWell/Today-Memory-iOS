@@ -188,29 +188,29 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
     
     func setupButton() {
         filterButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                self?.toggleButton(self?.filterButton)
-                self?.applyFilter()
-                self?.deselectButtons(except: self?.filterButton)
-                self?.showFilterSelectionView()
+            .subscribe(with: self, onNext: { owner, _  in
+                owner.toggleButton(owner.filterButton)
+                owner.applyFilter()
+                owner.deselectButtons(except: owner.filterButton)
+                owner.showFilterSelectionView()
 
             })
             .disposed(by: disposeBag)
         
         frameButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                self?.toggleButton(self?.frameButton)
-                self?.applyFrame()
-                self?.deselectButtons(except: self?.frameButton)
-                self?.showFrameViewSelectionView()
+            .subscribe(with: self, onNext: { owner, _  in
+                owner.toggleButton(owner.frameButton)
+                owner.applyFrame()
+                owner.deselectButtons(except: owner.frameButton)
+                owner.showFrameViewSelectionView()
             })
             .disposed(by: disposeBag)
         
         adjustmentButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                self?.toggleButton(self?.adjustmentButton)
-                self?.adjustPhoto()
-                self?.deselectButtons(except: self?.adjustmentButton)
+            .subscribe(with: self, onNext: { owner, _  in
+                owner.toggleButton(owner.adjustmentButton)
+                owner.adjustPhoto()
+                owner.deselectButtons(except: owner.adjustmentButton)
             })
             .disposed(by: disposeBag)
         

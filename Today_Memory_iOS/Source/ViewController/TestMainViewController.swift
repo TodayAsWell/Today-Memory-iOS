@@ -186,13 +186,13 @@ class TestMainCameraViewController: UIViewController {
         view.addSubview(filterSelectionView)
 
         styleButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                self?.showFilterSelectionView()
+            .subscribe(with: self, onNext: { owner, _  in
+                owner.showFilterSelectionView()
             })
 
         filterSelectionView.closeButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                self?.hideFilterSelectionView()
+            .subscribe(with: self, onNext: { owner, _  in
+                owner.hideFilterSelectionView()
             })
     }
     
