@@ -39,13 +39,24 @@ class FinishViewController: UIViewController, FinishViewInterface {
         $0.isEnabled = true
     }
     
+    private func saveImageToGallery() {
+        guard let image = mainFrameView.asImage() else {
+            print("Could not convert mainFrameView to image")
+            return
+        }
+
+        UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+        print("Save image to gallery")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 //        presenter.viewDidLoad()
         
         downloadButton.rx.tap
-            .subscribe(with: self, onNext: { owner, _  in
-                print("Download button tapped")
+            .subscribe(with: self, onNext: { [weak self] _,_   in
+                guard let self = self else { return }
+                self.saveImageToGallery()
             })
             .disposed(by: disposeBag)
         setupNavigationItem()
@@ -91,6 +102,29 @@ class FinishViewController: UIViewController, FinishViewInterface {
             $0.bottom.equalToSuperview().inset(64.0)
             $0.centerX.equalToSuperview()
             $0.height.width.equalTo(100.0)
+        }
+    }
+    
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            let alert = UIAlertController(title: "Error", message: "Failed to save image to gallery: \(error.localizedDescription)", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            present(alert, animated: true, completion: nil)
+            print("실패")
+        } else {
+            let alert = UIAlertController(title: "Success", message: "Image saved to gallery.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            present(alert, animated: true, completion: nil)
+            print("성공")
+        }
+    }
+}
+
+extension UIView {
+    func asImage() -> UIImage? {
+        let renderer = UIGraphicsImageRenderer(bounds: bounds)
+        return renderer.image { rendererContext in
+            layer.render(in: rendererContext.cgContext)
         }
     }
 }
