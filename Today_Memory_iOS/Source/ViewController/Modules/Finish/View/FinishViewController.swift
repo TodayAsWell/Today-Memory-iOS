@@ -11,9 +11,24 @@ class FinishViewController: UIViewController, FinishViewInterface {
     
     private var downloadWidth: Double = 100.0
     
-    private var exImage = UIImageView().then {
-        $0.image = UIImage(named: "ExPolaroid")
+    private var mainFrameView: UIView
+    private var userImageView: UIImageView
+    private var exImage: UIImageView
+    
+    private var editedFrame: EditedFrame
+    
+    init(editedFrame: EditedFrame) {
+        self.editedFrame = editedFrame
+        self.mainFrameView = editedFrame.mainFrameView!
+        self.userImageView = editedFrame.userImageView!
+        self.exImage = editedFrame.exImage!
+        super.init(nibName: nil, bundle: nil)
     }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     
     private var downloadButton = UIButton().then {
         $0.setImage(UIImage(named: "DownloadImage"), for: .normal)
@@ -43,16 +58,31 @@ class FinishViewController: UIViewController, FinishViewInterface {
     }
 
     func layout() {
+        view.addSubview(mainFrameView)
+        view.addSubview(userImageView)
         view.addSubview(exImage)
         view.addSubview(downloadButton)
     
         downloadButton.imageView?.contentMode = .scaleAspectFit
         downloadButton.imageEdgeInsets = UIEdgeInsets(top: 15, left: 15, bottom: 15, right: 15)
         
-    
-        exImage.snp.makeConstraints {
+        mainFrameView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(40.0)
             $0.centerX.equalToSuperview()
+            $0.width.equalTo(504)
+            $0.height.equalTo(648)
+        }
+        
+        userImageView.snp.makeConstraints {
+            $0.top.equalTo(mainFrameView.snp.top).offset(30)
+            $0.centerX.equalTo(mainFrameView.snp.centerX)
+            $0.height.equalTo(462.0)
+            $0.width.equalTo(443.0)
+        }
+        
+        exImage.snp.makeConstraints {
+            $0.top.equalTo(mainFrameView.snp.top)
+            $0.centerX.equalTo(mainFrameView.snp.centerX)
             $0.width.equalTo(504)
             $0.height.equalTo(648)
         }

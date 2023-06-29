@@ -11,6 +11,7 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
     private let controlView = ControlView()
     private let frameView = FrameView()
     private let stickerView = StickerView()
+    private var editedFrame: EditedFrame
     
     var delegate: SendDataDelegate?
     
@@ -108,11 +109,15 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
         $0.backgroundColor = .white
     }
     
-    init(image: UIImage) {
-        super.init(nibName: nil, bundle: nil)
+    convenience init(image: UIImage, editedFrame: EditedFrame) {
+        self.init(editedFrame: editedFrame)
         userImageView.image = image
     }
 
+    init(editedFrame: EditedFrame) {
+        self.editedFrame = editedFrame
+        super.init(nibName: nil, bundle: nil)
+    }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -124,7 +129,8 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
     }
     
     override func viewDidLoad() {
-        
+        super.viewDidLoad()
+
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(addTextToExImage))
         exImage.addGestureRecognizer(tapGestureRecognizer)
         exImage.isUserInteractionEnabled = true
@@ -242,8 +248,9 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
         navigationItem.rightBarButtonItem?.rx.tap
             .subscribe(onNext: {
                 print("네비게이션 버튼이 클릭되었습니다.")
-                let finishVC = FinishViewController()
-
+                let editedFrame = EditedFrame(mainFrameView: self.mainFrameView, userImageView: self.userImageView, exImage: self.exImage)
+                let finishVC = FinishViewController(editedFrame: editedFrame)
+                
                 guard let navigationController = self.navigationController else {
                     fatalError("Navigation controller not found.")
                 }

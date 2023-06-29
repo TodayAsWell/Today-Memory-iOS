@@ -523,7 +523,10 @@ extension MainCameraViewController: UIImagePickerControllerDelegate {
         print("이미지 선택")
         if let img = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
             picker.dismiss(animated: false) { () in
-                let vc = CorrectionViewController(image: img)
+                let userImageView = UIImageView(image: img)
+                let editedFrame = EditedFrame(userImageView: userImageView)
+                                     
+                let vc = CorrectionViewController(image: img, editedFrame: editedFrame)
                 let navController = UINavigationController(rootViewController: vc)
                 navController.modalPresentationStyle = UIModalPresentationStyle.fullScreen
                 self.present(navController, animated: true, completion: nil)
