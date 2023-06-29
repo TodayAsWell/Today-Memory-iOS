@@ -14,10 +14,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
+        var defualtImage: UIImage?
         let finishViewController = assembleSettingModule()
-        let correctionViewController = CorrectionViewController()
+        let mainViewController = MainCameraViewController()
         
-        let navigationController = UINavigationController(rootViewController: correctionViewController)
+        let navigationController = UINavigationController(rootViewController: mainViewController)
 
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = navigationController
@@ -25,24 +26,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
     }
     
-    func assembleFinishModule() -> FinishViewController {
-        let viewController = FinishViewController()
-        
-        let interactor = FinishInteractor()
-        let presenter = FinishPresenter()
-        let router = FinishRouter()
-        
-        viewController.presenter = presenter
-        presenter.view = viewController
-        
-        presenter.interactor = interactor
-        interactor.output = presenter
-        
-        presenter.router = router
-        router.viewController = viewController
-        
-        return viewController
-    }
+//    func assembleFinishModule() -> FinishViewController {
+//        let viewController = FinishViewController()
+//        
+//        let interactor = FinishInteractor()
+//        let presenter = FinishPresenter()
+//        let router = FinishRouter()
+//        
+//        viewController.presenter = presenter
+//        presenter.view = viewController
+//        
+//        presenter.interactor = interactor
+//        interactor.output = presenter
+//        
+//        presenter.router = router
+//        router.viewController = viewController
+//        
+//        return viewController
+//    }
     
     func assembleSettingModule() -> SettingViewController {
         let viewController = SettingViewController()

@@ -5,7 +5,7 @@ import RxCocoa
 import RxSwift
 
 class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, UIPopoverPresentationControllerDelegate {
-    
+
     let disposeBag = DisposeBag()
     
     private let controlView = ControlView()
@@ -18,6 +18,7 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
         return [
             UIAction(title: "이전", image: UIImage(systemName: "arrow.uturn.left"), handler: { _ in
                 print("이전")
+                self.dismiss(animated: true)
             }),
             UIAction(title: "다음", image: UIImage(systemName: "arrow.uturn.right"), handler: { _ in
                 print("다음")
@@ -105,6 +106,15 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
         $0.spacing = 0
         $0.distribution = .fillEqually
         $0.backgroundColor = .white
+    }
+    
+    init(image: UIImage) {
+        super.init(nibName: nil, bundle: nil)
+        userImageView.image = image
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

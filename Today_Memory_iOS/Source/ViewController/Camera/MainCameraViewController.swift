@@ -5,7 +5,7 @@ import SnapKit
 import Then
 import CoreMotion
 
-class MainCameraViewController: UIViewController {
+class MainCameraViewController: UIViewController, UINavigationControllerDelegate {
     
     private var cameraView: XCamera!
 
@@ -88,9 +88,9 @@ class MainCameraViewController: UIViewController {
     
     private let pictureToggleButton = UIButton().then {
         $0.setTitle("사진", for: .normal)
-        $0.setTitleColor(UIColor.black, for: .normal)
+        $0.setTitleColor(UIColor.White, for: .normal)
         $0.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .bold)
-        $0.backgroundColor = .Yellow
+        $0.backgroundColor = .BAA7E7
         $0.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
         $0.layer.cornerRadius = 19.0
     }
@@ -294,6 +294,19 @@ class MainCameraViewController: UIViewController {
     
     private func setupUI() {
         view.addSubview(filterSelectionView)
+        
+        correctionButton.rx.tap
+            .subscribe(with: self, onNext: { owner, _ in
+//                let vc = CorrectionViewController()
+//                let navController = UINavigationController(rootViewController: vc)
+//                navController.modalPresentationStyle = UIModalPresentationStyle.fullScreen
+//                self.present(navController, animated: true, completion: nil)
+                let picker = UIImagePickerController()
+                picker.sourceType = .photoLibrary
+                picker.allowsEditing = true
+                picker.delegate = self
+                self.present(picker, animated: false)
+            })
 
         filterButton.rx.tap
             .subscribe(with: self, onNext: { owner, _  in
@@ -471,13 +484,13 @@ class MainCameraViewController: UIViewController {
         UIView.animate(withDuration: 0.3) {
             self.stackView.layoutIfNeeded()
             
-            let button1TitleColor: UIColor = self.pictureToggleButton.isSelected ? .black : .Gray4
-            let button2TitleColor: UIColor = self.videoToggleButton.isSelected ? .black : .Gray4
+            let button1TitleColor: UIColor = self.pictureToggleButton.isSelected ? .White : .Gray4
+            let button2TitleColor: UIColor = self.videoToggleButton.isSelected ? .White : .Gray4
             self.pictureToggleButton.setTitleColor(button1TitleColor, for: .normal)
             self.videoToggleButton.setTitleColor(button2TitleColor, for: .normal)
             
-            self.pictureToggleButton.backgroundColor = self.pictureToggleButton.isSelected ? .Yellow : .White
-            self.videoToggleButton.backgroundColor = self.videoToggleButton.isSelected ? .Yellow : .White
+            self.pictureToggleButton.backgroundColor = self.pictureToggleButton.isSelected ? .BAA7E7 : .White
+            self.videoToggleButton.backgroundColor = self.videoToggleButton.isSelected ? .BAA7E7 : .White
         }
     }
     
@@ -492,6 +505,32 @@ class MainCameraViewController: UIViewController {
         UIView.animate(withDuration: 0.3) { [weak self] in
             guard let self = self else { return }
             self.filterSelectionView.frame.origin.y = self.view.frame.height
+        }
+    }
+}
+
+extension MainCameraViewController: UIImagePickerControllerDelegate {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        print("이미지 선택하지않고 취소한 경우")
+        
+        self.dismiss(animated: false) { () in
+            let alert = UIAlertController(title: "", message: "이미지 선택이 취소되었습니다.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "확인", style: .cancel))
+            self.present(alert, animated: false)
+        }
+    }
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        print("이미지 선택")
+        if let img = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            picker.dismiss(animated: false) { () in
+                let vc = CorrectionViewController(image: img)
+                let navController = UINavigationController(rootViewController: vc)
+                navController.modalPresentationStyle = UIModalPresentationStyle.fullScreen
+                self.present(navController, animated: true, completion: nil)
+            }
+        } else {
+            print("이미지를 선택하지 않음")
+            picker.dismiss(animated: true, completion: nil)
         }
     }
 }

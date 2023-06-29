@@ -5,7 +5,7 @@ import RxSwift
 import RxCocoa
 
 class FinishViewController: UIViewController, FinishViewInterface {
-    var presenter: FinishPresenterInterface!
+//    var presenter: FinishPresenterInterface!
     
     private var disposeBag = DisposeBag()
     
@@ -26,13 +26,15 @@ class FinishViewController: UIViewController, FinishViewInterface {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter.viewDidLoad()
+//        presenter.viewDidLoad()
         
         downloadButton.rx.tap
             .subscribe(with: self, onNext: { owner, _  in
                 print("Download button tapped")
             })
             .disposed(by: disposeBag)
+        setupNavigationItem()
+        layout()
     }
     
     func setupNavigationItem() {
