@@ -40,12 +40,37 @@ class FinishViewController: UIViewController, FinishViewInterface {
     }
     
     private func saveImageToGallery() {
-        guard let image = mainFrameView.asImage() else {
-            print("Could not convert mainFrameView to image")
-            return
+        let screenBounds = UIScreen.main.bounds
+        let adjustedWidth = screenBounds.width
+        let adjustedHeight = adjustedWidth
+        let rendererSize = CGSize(width: adjustedWidth, height: adjustedHeight)
+
+        let canvasRenderer = UIGraphicsImageRenderer(size: rendererSize)
+
+        let imageToCombine = canvasRenderer.image { rendererContext in
+            UIGraphicsBeginImageContextWithOptions(rendererSize, false, 0.0)
+
+            let context = rendererContext.cgContext
+            
+            context.setFillColor(UIColor.white.cgColor)
+            context.fill(CGRect(x: 0, y: 0, width: adjustedWidth, height: adjustedHeight))
+
+            let mainFrameCenterX = (adjustedWidth - mainFrameView.bounds.width) / 2.0
+            let mainFrameCenterY = (adjustedHeight - mainFrameView.bounds.height) / 2.0
+            context.translateBy(x: mainFrameCenterX, y: mainFrameCenterY)
+            mainFrameView.layer.render(in: context)
+            context.translateBy(x: -mainFrameCenterX, y: -mainFrameCenterY)
+
+            let centerX = (adjustedWidth - userImageView.bounds.width) / 2.0
+            let centerY = (adjustedHeight - userImageView.bounds.height) / 2.0
+            context.translateBy(x: centerX, y: centerY)
+            userImageView.layer.render(in: context)
+            exImage.layer.render(in: context)
+
+            UIGraphicsEndImageContext()
         }
 
-        UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+        UIImageWriteToSavedPhotosAlbum(imageToCombine, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
         print("Save image to gallery")
     }
     
