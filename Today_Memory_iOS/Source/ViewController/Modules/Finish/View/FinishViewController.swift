@@ -69,6 +69,7 @@ class FinishViewController: UIViewController, FinishViewInterface {
 
             UIGraphicsEndImageContext()
         }
+        
 
         UIImageWriteToSavedPhotosAlbum(imageToCombine, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
         print("Save image to gallery")

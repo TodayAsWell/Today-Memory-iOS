@@ -12,12 +12,12 @@ protocol SendDataDelegate {
 class StickerView: UIView {
     
     let categorySegmentedControl: UISegmentedControl = {
-        let segmentedControl = UISegmentedControl(items: ["전체", "감정", "식물", "사람"])
+        let segmentedControl = UISegmentedControl(items: ["전체", "감정", "식물", "사람", "동물", "사물"])
         segmentedControl.addTarget(self, action: #selector(categorySegmentedControlValueChanged), for: .valueChanged)
 
         segmentedControl.addUnderlineForSelectedSegment()
         segmentedControl.apportionsSegmentWidthsByContent = true
-        segmentedControl.backgroundColor = .red
+        segmentedControl.backgroundColor = .white
         
         return segmentedControl
     }()
@@ -43,7 +43,7 @@ class StickerView: UIView {
         return button
     }()
     
-    var cellData = ["blackHartSticker","blackFlowerSticker","blackJapaneseFlower","pinkHartSticker","pinkFlowerSticker","pinkJapaneseFlower","purpleHartSticker","purpleFlowerSticker","purpleJapaneseFlower","gradationHartSticker","gradationFlowerSticker","gradationJapaneseFlower", "goodWonjunSticker", "재하"] {
+    var cellData = ["blackHartSticker","blackFlowerSticker","blackJapaneseFlower","pinkHartSticker","pinkFlowerSticker","pinkJapaneseFlower","purpleHartSticker","purpleFlowerSticker","purpleJapaneseFlower","gradationHartSticker","gradationFlowerSticker","gradationJapaneseFlower", "goodWonjunSticker", "재하", "person3", "person4", "glasses1", "go1", "gun1", "hapster1", "hapster2", "hapster3"] {
         didSet {
             collectionView.reloadData()
         }
@@ -98,7 +98,7 @@ class StickerView: UIView {
         switch categorySegmentedControl.selectedSegmentIndex {
         case 0:
             //모두 보기
-            cellData = ["blackHartSticker","blackFlowerSticker","blackJapaneseFlower","pinkHartSticker","pinkFlowerSticker","pinkJapaneseFlower","purpleHartSticker","purpleFlowerSticker","purpleJapaneseFlower","gradationHartSticker","gradationFlowerSticker","gradationJapaneseFlower", "goodWonjunSticker", "재하"]
+            cellData = ["blackHartSticker","blackFlowerSticker","blackJapaneseFlower","pinkHartSticker","pinkFlowerSticker","pinkJapaneseFlower","purpleHartSticker","purpleFlowerSticker","purpleJapaneseFlower","gradationHartSticker","gradationFlowerSticker","gradationJapaneseFlower", "goodWonjunSticker", "재하", "person3", "person4", "glasses1", "go1", "gun1", "hapster1", "hapster2", "hapster3"]
         case 1:
             //감정
             cellData = ["pinkHartSticker","blackHartSticker","purpleHartSticker", "gradationHartSticker"]
@@ -107,7 +107,14 @@ class StickerView: UIView {
             cellData = ["pinkFlowerSticker", "blackFlowerSticker", "purpleFlowerSticker", "gradationJapaneseFlower", "pinkJapaneseFlower" , "blackJapaneseFlower", "purpleJapaneseFlower", "gradationJapaneseFlower"]
         case 3:
             //사람
-            cellData = ["goodWonjunSticker", "재하"]
+            cellData = ["goodWonjunSticker", "재하", "person3", "person4"]
+            
+        case 4:
+            //동물
+            cellData = ["hapster1", "hapster2", "hapster3"]
+        case 5:
+            //사물
+            cellData = ["glasses1", "go1", "gun1"]
         default:
             break
         }
