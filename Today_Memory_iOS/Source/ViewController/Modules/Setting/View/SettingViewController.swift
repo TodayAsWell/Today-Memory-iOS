@@ -11,7 +11,9 @@ class SettingViewController: UIViewController, SettingViewInterface {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter.viewDidLoad()
+//        presenter.viewDidLoad()
+        setupNavigationItem()
+        setupTableView()
     }
 
     func setupNavigationItem() {
@@ -32,6 +34,8 @@ class SettingViewController: UIViewController, SettingViewInterface {
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SettingCell")
         view.addSubview(tableView)
+        
+        setupConstraints()
         
         tableView.backgroundColor = .F6F6F8
         
