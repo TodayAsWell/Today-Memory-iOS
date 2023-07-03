@@ -5,6 +5,8 @@ import SnapKit
 import Then
 import CoreMotion
 
+var takenImage = UIImage()
+
 class MainCameraViewController: UIViewController, UINavigationControllerDelegate {
     
     private var cameraView: XCamera!
@@ -17,6 +19,28 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     var currentAngleH: Float = 0.0
     var currentAngleY: Float = 0.0
     var isSkyShot = false
+    
+    lazy var menuItems: [UIAction] = {
+        return [
+            UIAction(title: "그리드", image: UIImage(systemName: "arrow.uturn.left"), handler: { _ in
+                print("그리드 추가")
+            }),
+            UIAction(title: "화면 터치 촬영", image: UIImage(systemName: "hand.point.up.left.fill"), handler: { _ in
+                self.ellipsisButtonTap()
+            }),
+            UIAction(title: "미정", image: UIImage(systemName: "arrow.clockwise"), handler: { _ in
+            }),
+            UIAction(title: "설정", image: UIImage(systemName: "gearshape.fill"), handler: { _ in
+                print("설정")
+                let settingViewController = SettingViewController()
+                self.navigationController?.pushViewController(settingViewController, animated: true)
+            })
+        ]
+    }()
+    
+    lazy var menu: UIMenu = {
+        return UIMenu(title: "", options: [], children: menuItems)
+    }()
     
     private let filterSelectionView = FilterSelectionView()
     
@@ -231,7 +255,8 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     
     private func configureNavigationItems() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.triangle.2.circlepath"), style: .plain, target: self, action: #selector(backButtonTap(_:)))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), style: .plain, target: self, action: #selector(ellipsisButtonTap(_:)))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"),
+                                                                menu: menu)
     }
     
     private func configureButtonContainer(button: UIButton, label: UILabel, text: String) -> UIStackView {
@@ -459,17 +484,17 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
         }
     }
     
-    @objc private func ellipsisButtonTap(_ sender: Any) {
+    private func ellipsisButtonTap() {
         print("ellipsisButton tapped")
 
         touchShootOn.toggle()
         
         if touchShootOn {
-            cameraView.addTapGesture(allow: false)
-            print("실행하지 않음")
-        } else {
             cameraView.addTapGesture(allow: true)
             print("실행")
+        } else {
+            cameraView.addTapGesture(allow: false)
+            print("실행하지 않음")
         }
     }
     
