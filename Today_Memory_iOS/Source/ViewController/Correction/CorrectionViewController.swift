@@ -208,8 +208,6 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
                 owner.toggleButton(owner.filterButton)
                 owner.applyFilter()
                 owner.deselectButtons(except: owner.filterButton)
-                owner.showFilterSelectionView()
-
             })
             .disposed(by: disposeBag)
         
@@ -227,6 +225,7 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
                 owner.toggleButton(owner.adjustmentButton)
                 owner.adjustPhoto()
                 owner.deselectButtons(except: owner.adjustmentButton)
+                owner.showFilterSelectionView()
             })
             .disposed(by: disposeBag)
         
@@ -278,24 +277,24 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
         print("필터 버튼이 탭되었습니다.")
         hideFameViewSelectionView()
         hideStickerSelectionView()
+        hideControlSelectionView()
     }
     
     func applyFrame() {
         print("액자 버튼이 탭되었습니다.")
-        hideFilterSelectionView()
+        hideControlSelectionView()
         hideStickerSelectionView()
     }
     
     func adjustPhoto() {
         print("조정 버튼이 탭되었습니다.")
-        hideFilterSelectionView()
         hideFameViewSelectionView()
         hideStickerSelectionView()
     }
     
     func applySticker() {
         print("스티커 버튼이 탭되었습니다.")
-        hideFilterSelectionView()
+        hideControlSelectionView()
         hideFameViewSelectionView()
     }
     
@@ -355,7 +354,7 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
         }
     }
     
-    private func hideFilterSelectionView() {
+    private func hideControlSelectionView() {
         UIView.animate(withDuration: 0.3) {
             self.controlView.alpha = 0.0
         } completion: { _ in

@@ -74,6 +74,9 @@ extension ControlView: UICollectionViewDelegate, UICollectionViewDataSource {
         case 2:
             cell.titleLabel.text = "보정"
             cell.imageView.image = UIImage(named: "BellImage")
+        case 3:
+            cell.titleLabel.text = "글자"
+            cell.imageView.image = UIImage(named: "wordImage")
         default:
             cell.titleLabel.text = "없음"
             cell.imageView.backgroundColor = .black

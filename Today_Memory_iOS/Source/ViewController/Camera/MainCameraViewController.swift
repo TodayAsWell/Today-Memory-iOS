@@ -154,12 +154,13 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
         cameraView.startRunning()
         
         filterSelectionView.frame = CGRect(x: 0, y: view.frame.height, width: view.frame.width, height: 270)
-
+        
         setupUI()
         configureDeviceMotion()
         
         self.navigationItem.titleView = navCenterButton
         navCenterButton.addTarget(self, action: #selector(navCenterButtonTapped), for: .touchUpInside)
+        
     }
     
     @objc func navCenterButtonTapped() {
@@ -253,7 +254,7 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
         print("Zoom factor: \(zoomFactor)")
     }
     
-    private func configureNavigationItems() {
+    public func configureNavigationItems() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.triangle.2.circlepath"), style: .plain, target: self, action: #selector(backButtonTap(_:)))
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"),
                                                                 menu: menu)
