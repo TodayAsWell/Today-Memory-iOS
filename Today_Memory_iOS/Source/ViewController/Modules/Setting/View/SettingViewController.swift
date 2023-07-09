@@ -17,7 +17,7 @@ class SettingViewController: UIViewController, SettingViewInterface {
     }
 
     func setupNavigationItem() {
-        title = "설정"
+        title = "보안 기능 설명"
         
         if #available(iOS 13.0, *) {
             let appearance = UINavigationBarAppearance()
