@@ -47,6 +47,9 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     private let filterSelectionView = FilterSelectionView()
     private let styleSelectionView = StyleSelectionView()
     
+    var appliedStyleImageView: UIImageView?
+
+    
     private let stackView = UIStackView().then {
         
         if UIDevice.current.userInterfaceIdiom == .pad {
@@ -568,13 +571,21 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     }
     
     func applyStyle(imageName: String) {
+        if let imageView = appliedStyleImageView {
+            imageView.removeFromSuperview()
+            appliedStyleImageView = nil
+            return
+        }
+
         guard let image = UIImage(named: imageName) else { return }
         let resizedImage = resizeImage(image: image, targetSize: cameraView.bounds.size)
-        
+
         let imageView = UIImageView(image: resizedImage)
         imageView.frame = cameraView.bounds
+        imageView.tag = 1000
         cameraView.addSubview(imageView)
         cameraView.bringSubviewToFront(imageView)
+        appliedStyleImageView = imageView
     }
 
     func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
