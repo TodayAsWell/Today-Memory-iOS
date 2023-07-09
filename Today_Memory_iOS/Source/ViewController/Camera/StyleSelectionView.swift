@@ -4,7 +4,14 @@ import RxCocoa
 import Then
 import SnapKit
 
-class FilterSelectionView: UIView {
+protocol StyleSelectionViewDelegate: AnyObject {
+    func didSelectStyleAt(index: Int)
+}
+
+class StyleSelectionView: UIView {
+    
+    weak var delegate: StyleSelectionViewDelegate?
+    
     let closeButton = UIButton().then {
         let image = UIImage(named: "closeImage")
         $0.setBackgroundImage(image, for: UIControl.State.normal)
@@ -14,8 +21,9 @@ class FilterSelectionView: UIView {
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 7
+        layout.minimumInteritemSpacing = 10
         layout.itemSize = CGSize(width: 100, height: 100)
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
@@ -42,18 +50,18 @@ class FilterSelectionView: UIView {
     private func setupUI() {
         backgroundColor = .white
         
-        addSubview(collectionView)
-        collectionView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
-            $0.top.equalToSuperview().offset(40)
-            $0.height.equalTo(100)
-        }
-        
         addSubview(centerButton)
         centerButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(collectionView.snp.bottom).offset(20)
+            $0.bottom.equalToSuperview().inset(20.0)
             $0.width.height.equalTo(60)
+        }
+        
+        addSubview(collectionView)
+        collectionView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(centerButton.snp.top).offset(-20.0)
+            $0.height.equalTo(100)
         }
         
         addSubview(closeButton)
@@ -67,33 +75,31 @@ class FilterSelectionView: UIView {
     private func setupCollectionView() {
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.register(FilterCollectionViewCell.self, forCellWithReuseIdentifier: "FilterCollectionViewCell")
+        collectionView.register(StyleCollectionViewCell.self, forCellWithReuseIdentifier: "StyleCollectionViewCell")
     }
 }
 
-extension FilterSelectionView: UICollectionViewDelegate, UICollectionViewDataSource {
+extension StyleSelectionView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 10
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FilterCollectionViewCell", for: indexPath) as! FilterCollectionViewCell
-        
-        cell.titleLabel.text = "Rise"
-        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StyleCollectionViewCell", for: indexPath) as! StyleCollectionViewCell
+                
         switch indexPath.row {
         case 0:
-            cell.imageView.backgroundColor = .black
+            cell.imageView.image = UIImage(named: "MiniThoughtImage")
+            cell.imageView.layer.borderWidth = 2
+            cell.imageView.layer.borderColor = UIColor(named: "EAEAFC")?.cgColor
         default:
-            cell.imageView.image = UIImage(named: "defualtFilterImage")
-            return cell
+            cell.imageView.backgroundColor = .red
         }
 
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-
-        print("index \(indexPath.row)")
+        delegate?.didSelectStyleAt(index: indexPath.row)
     }
 }

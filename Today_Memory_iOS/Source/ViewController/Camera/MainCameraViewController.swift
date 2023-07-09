@@ -9,6 +9,8 @@ var takenImage = UIImage()
 
 class MainCameraViewController: UIViewController, UINavigationControllerDelegate {
     
+    let disposeBag = DisposeBag()
+    
     private var cameraView: XCamera!
 
     var isOn = false
@@ -43,6 +45,7 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     }()
     
     private let filterSelectionView = FilterSelectionView()
+    private let styleSelectionView = StyleSelectionView()
     
     private let stackView = UIStackView().then {
         
@@ -154,12 +157,15 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
         cameraView.startRunning()
         
         filterSelectionView.frame = CGRect(x: 0, y: view.frame.height, width: view.frame.width, height: 270)
+        styleSelectionView.frame = CGRect(x: 0, y: view.frame.height, width: view.frame.width, height: 270)
         
         setupUI()
         configureDeviceMotion()
         
         self.navigationItem.titleView = navCenterButton
         navCenterButton.addTarget(self, action: #selector(navCenterButtonTapped), for: .touchUpInside)
+        
+        styleSelectionView.delegate = self
         
     }
     
@@ -320,29 +326,41 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     
     private func setupUI() {
         view.addSubview(filterSelectionView)
+        view.addSubview(styleSelectionView)
         
         correctionButton.rx.tap
             .subscribe(with: self, onNext: { owner, _ in
-//                let vc = CorrectionViewController()
-//                let navController = UINavigationController(rootViewController: vc)
-//                navController.modalPresentationStyle = UIModalPresentationStyle.fullScreen
-//                self.present(navController, animated: true, completion: nil)
                 let picker = UIImagePickerController()
                 picker.sourceType = .photoLibrary
                 picker.allowsEditing = true
                 picker.delegate = self
                 self.present(picker, animated: false)
             })
+            .disposed(by: disposeBag)
 
         filterButton.rx.tap
             .subscribe(with: self, onNext: { owner, _  in
                 owner.showFilterSelectionView()
             })
+            .disposed(by: disposeBag)
 
         filterSelectionView.closeButton.rx.tap
             .subscribe(with: self, onNext: { owner, _  in
                 owner.hideFilterSelectionView()
             })
+            .disposed(by: disposeBag)
+
+        styleButton.rx.tap
+            .subscribe(with: self, onNext: { owner, _ in
+                owner.showStyleSelectionView()
+            })
+            .disposed(by: disposeBag)
+        
+        styleSelectionView.closeButton.rx.tap
+            .subscribe(with: self, onNext: { owner, _  in
+                owner.hideStyleSelectionView()
+            })
+            .disposed(by: disposeBag)
     }
     
     private func layout() {
@@ -526,12 +544,53 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
             self.filterSelectionView.frame.origin.y = self.view.frame.height - self.filterSelectionView.frame.height
         }
     }
-
+    
+    private func showStyleSelectionView() {
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self = self else { return }
+            self.styleSelectionView.frame.origin.y = self.view.frame.height - self.styleSelectionView.frame.height
+        }
+    }
+    
     private func hideFilterSelectionView() {
         UIView.animate(withDuration: 0.3) { [weak self] in
             guard let self = self else { return }
             self.filterSelectionView.frame.origin.y = self.view.frame.height
         }
+    }
+    
+    private func hideStyleSelectionView() {
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self = self else { return }
+            self.styleSelectionView.frame.origin.y = self.view.frame.height
+
+        }
+    }
+    
+    func applyStyle(imageName: String) {
+        guard let image = UIImage(named: imageName) else { return }
+        let resizedImage = resizeImage(image: image, targetSize: cameraView.bounds.size)
+        
+        let imageView = UIImageView(image: resizedImage)
+        imageView.frame = cameraView.bounds
+        cameraView.addSubview(imageView)
+        cameraView.bringSubviewToFront(imageView)
+    }
+
+    func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+        let size = image.size
+        let widthRatio  = targetSize.width  / size.width
+        let heightRatio = targetSize.height / size.height
+        
+        let newSize = CGSize(width: size.width * widthRatio, height: size.height * heightRatio)
+        let rect = CGRect(origin: .zero, size: newSize)
+        
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.draw(in: rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage!
     }
 }
 
@@ -560,6 +619,14 @@ extension MainCameraViewController: UIImagePickerControllerDelegate {
         } else {
             print("이미지를 선택하지 않음")
             picker.dismiss(animated: true, completion: nil)
+        }
+    }
+}
+
+extension MainCameraViewController: StyleSelectionViewDelegate {
+    func didSelectStyleAt(index: Int) {
+        if index == 0 {
+            applyStyle(imageName: "thoughtImage")
         }
     }
 }
