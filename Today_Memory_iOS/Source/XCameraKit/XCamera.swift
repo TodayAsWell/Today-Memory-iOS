@@ -218,7 +218,7 @@ open class XCamera: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     /// Print the image as a PDF and present a print controller to print the document.
     /// - Parameters:
     ///   - image: The image to be printed as a PDF.
-    func printImageAsPDF(image: UIImage) {
+    open func printImageAsPDF(image: UIImage) {
         let pdfData = NSMutableData()
         let pdfConsumer = CGDataConsumer(data: pdfData as CFMutableData)!
         var mediaBox = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)

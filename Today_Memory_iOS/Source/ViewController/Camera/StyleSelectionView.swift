@@ -12,6 +12,19 @@ class StyleSelectionView: UIView {
     
     weak var delegate: StyleSelectionViewDelegate?
     
+    var selectedIndex: Int = 0
+    
+    let categorySegmentedControl: UISegmentedControl = {
+        let segmentedControl = UISegmentedControl(items: ["전체", "감정", "식물", "사람"])
+        segmentedControl.addTarget(self, action: #selector(categorySegmentedControlValueChanged), for: .valueChanged)
+
+        segmentedControl.addUnderlineForSelectedSegment()
+        segmentedControl.apportionsSegmentWidthsByContent = true
+        segmentedControl.backgroundColor = .white
+        
+        return segmentedControl
+    }()
+    
     let closeButton = UIButton().then {
         let image = UIImage(named: "closeImage")
         $0.setBackgroundImage(image, for: UIControl.State.normal)
@@ -50,6 +63,12 @@ class StyleSelectionView: UIView {
     private func setupUI() {
         backgroundColor = .white
         
+        addSubview(categorySegmentedControl)
+        categorySegmentedControl.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(20)
+            $0.top.equalToSuperview().offset(20)
+        }
+        
         addSubview(centerButton)
         centerButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
@@ -77,23 +96,56 @@ class StyleSelectionView: UIView {
         collectionView.dataSource = self
         collectionView.register(StyleCollectionViewCell.self, forCellWithReuseIdentifier: "StyleCollectionViewCell")
     }
+    
+    @objc func categorySegmentedControlValueChanged(_ sender: UISegmentedControl) {
+        let selectedIndex = sender.selectedSegmentIndex
+
+        if selectedIndex == 0 {
+            let indexPath = IndexPath(item: 0, section: 0)
+            collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+        }
+        
+        if selectedIndex == 1 {
+            let indexPath = IndexPath(item: 10, section: 0)
+            collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+        }
+        
+        if selectedIndex == 2 {
+            let indexPath = IndexPath(item: 15, section: 0)
+            collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+        }
+        
+        if selectedIndex == 3 {
+            let indexPath = IndexPath(item: 19, section: 0)
+            collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+        }
+    }
 }
 
 extension StyleSelectionView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return 20
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StyleCollectionViewCell", for: indexPath) as! StyleCollectionViewCell
+        
+        cell.imageView.layer.borderWidth = 2
+        cell.imageView.layer.borderColor = UIColor.EAEAFC.cgColor
                 
         switch indexPath.row {
         case 0:
             cell.imageView.image = UIImage(named: "MiniThoughtImage")
-            cell.imageView.layer.borderWidth = 2
-            cell.imageView.layer.borderColor = UIColor(named: "EAEAFC")?.cgColor
+        case 1:
+            cell.imageView.image = UIImage(named: "MiniWorryImage")
+        case 2:
+            cell.imageView.image = UIImage(named: "MiniWorkImage")
+        case 3:
+            cell.imageView.image = UIImage(named: "MiniCatchImage")
+        case 4:
+            cell.imageView.image = UIImage(named: "MiniLeanImage")
         default:
-            cell.imageView.backgroundColor = .red
+            cell.imageView.backgroundColor = .white
         }
 
         return cell

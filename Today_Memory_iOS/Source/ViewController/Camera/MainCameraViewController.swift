@@ -12,7 +12,7 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     let disposeBag = DisposeBag()
     
     private var cameraView: XCamera!
-
+    
     var isOn = false
     var gridOn = false
     var touchShootOn = false
@@ -48,7 +48,7 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     private let styleSelectionView = StyleSelectionView()
     
     var appliedStyleImageView: UIImageView?
-
+    
     
     private let stackView = UIStackView().then {
         
@@ -74,9 +74,9 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     private let centerButton = UIButton(type: .system).then {
         let image = UIImage(named: "centerButton")
         $0.setBackgroundImage(image, for: UIControl.State.normal)
-//        $0.layer.cornerRadius = 45.0
-//        $0.layer.borderWidth = 2
-//        $0.layer.borderColor = UIColor.white.cgColor
+        //        $0.layer.cornerRadius = 45.0
+        //        $0.layer.borderWidth = 2
+        //        $0.layer.borderColor = UIColor.white.cgColor
     }
     
     let correctionButton = UIButton(type: .system).then {
@@ -104,7 +104,7 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     }
     
     private let toggleButtonStackView = UIStackView().then {
-
+        
         if UIDevice.current.userInterfaceIdiom == .pad {
             $0.axis = .horizontal
             $0.spacing = 20.0
@@ -137,7 +137,7 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     private let navCenterButton = UIButton(type: .system).then {
         $0.setImage(UIImage(named: "aspectRatioButton"), for: .normal)
     }
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -174,6 +174,8 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     
     @objc func navCenterButtonTapped() {
         print("네비게이션 가운데 버튼이 눌렸습니다.")
+        let imageToPrint = UIImage(named: "ExPolaroidx")!
+        self.cameraView.printImageAsPDF(image: imageToPrint)
     }
     
     func configureDeviceMotion() {
@@ -186,11 +188,11 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
             let x = attitude.roll * (180 / .pi)
             let roundedX = Float(round(x * 100)) / 100.0
             let currentAngleY = attitude.pitch * (180 / .pi)
-
+            
             self.currentAngleH = roundedX * 90
-
+            
             if (-90 < self.currentAngleH && self.currentAngleH < 90
-                    && -15 < currentAngleY && currentAngleY < 15) {
+                 && -15 < currentAngleY && currentAngleY < 15) {
                 
                 self.view.subviews.forEach { subview in
                     if subview != self.centerButton && subview != self.cameraView {
@@ -241,7 +243,7 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
                         self.navigationItem.leftBarButtonItem?.tintColor = .black
                         
                         self.view.backgroundColor = .white
-                                                
+                        
                         self.styleButton.isHidden = false
                         self.correctionButton.isHidden = false
                         self.effectButton.isHidden = false
@@ -258,7 +260,7 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     }
     
     @objc func handlePinchGesture(_ gesture: UIPinchGestureRecognizer) {
-
+        
         let zoomFactor = cameraView.handleZoomGesture(pinchGesture: gesture)
         print("Zoom factor: \(zoomFactor)")
     }
@@ -295,7 +297,7 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
         let correctionLabel = UILabel()
         
         let correctionLabelButtonContainer = configureButtonContainer(button: correctionButton, label: correctionLabel, text: "보정")
-
+        
         let styleButton = styleButton
         let styleLabel = UILabel()
         
@@ -333,26 +335,45 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
         
         correctionButton.rx.tap
             .subscribe(with: self, onNext: { owner, _ in
-                let picker = UIImagePickerController()
-                picker.sourceType = .photoLibrary
-                picker.allowsEditing = true
-                picker.delegate = self
-                self.present(picker, animated: false)
+                
+                let actionSheet = UIAlertController(title: "보정 모드", message: "아래 모드 중 선택해주세요", preferredStyle: .actionSheet)
+
+                if let popoverController = actionSheet.popoverPresentationController {
+                    popoverController.sourceView = self.view
+                    popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+                    popoverController.permittedArrowDirections = []
+                }
+
+                actionSheet.addAction(UIAlertAction(title: "인생 네컷", style: .default, handler: {(ACTION:UIAlertAction) in
+                    print("인생 네컷")
+                }))
+
+                actionSheet.addAction(UIAlertAction(title: "단일 폴라로이드", style: .default, handler: {(ACTION:UIAlertAction) in
+                    let picker = UIImagePickerController()
+                    picker.sourceType = .photoLibrary
+                    picker.allowsEditing = true
+                    picker.delegate = self
+                    self.present(picker, animated: false)
+                }))
+                
+                actionSheet.addAction(UIAlertAction(title: "취소", style: .destructive, handler: nil))
+
+                self.present(actionSheet, animated: true, completion: nil)
             })
             .disposed(by: disposeBag)
-
+        
         filterButton.rx.tap
             .subscribe(with: self, onNext: { owner, _  in
                 owner.showFilterSelectionView()
             })
             .disposed(by: disposeBag)
-
+        
         filterSelectionView.closeButton.rx.tap
             .subscribe(with: self, onNext: { owner, _  in
                 owner.hideFilterSelectionView()
             })
             .disposed(by: disposeBag)
-
+        
         styleButton.rx.tap
             .subscribe(with: self, onNext: { owner, _ in
                 owner.showStyleSelectionView()
@@ -508,7 +529,7 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     
     private func ellipsisButtonTap() {
         print("ellipsisButton tapped")
-
+        
         touchShootOn.toggle()
         
         if touchShootOn {
@@ -566,20 +587,18 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
         UIView.animate(withDuration: 0.3) { [weak self] in
             guard let self = self else { return }
             self.styleSelectionView.frame.origin.y = self.view.frame.height
-
+            
         }
     }
     
     func applyStyle(imageName: String) {
         if let imageView = appliedStyleImageView {
             imageView.removeFromSuperview()
-            appliedStyleImageView = nil
-            return
         }
-
+        
         guard let image = UIImage(named: imageName) else { return }
         let resizedImage = resizeImage(image: image, targetSize: cameraView.bounds.size)
-
+        
         let imageView = UIImageView(image: resizedImage)
         imageView.frame = cameraView.bounds
         imageView.tag = 1000
@@ -587,7 +606,7 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
         cameraView.bringSubviewToFront(imageView)
         appliedStyleImageView = imageView
     }
-
+    
     func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
         let size = image.size
         let widthRatio  = targetSize.width  / size.width
@@ -621,7 +640,7 @@ extension MainCameraViewController: UIImagePickerControllerDelegate {
             picker.dismiss(animated: false) { () in
                 let userImageView = UIImageView(image: img)
                 let editedFrame = EditedFrame(userImageView: userImageView)
-                                     
+                
                 let vc = CorrectionViewController(image: img, editedFrame: editedFrame)
                 let navController = UINavigationController(rootViewController: vc)
                 navController.modalPresentationStyle = UIModalPresentationStyle.fullScreen
@@ -636,8 +655,20 @@ extension MainCameraViewController: UIImagePickerControllerDelegate {
 
 extension MainCameraViewController: StyleSelectionViewDelegate {
     func didSelectStyleAt(index: Int) {
-        if index == 0 {
+        
+        switch index {
+        case 0:
             applyStyle(imageName: "thoughtImage")
+        case 1:
+            applyStyle(imageName: "worryImage")
+        case 2:
+            applyStyle(imageName: "workImage")
+        case 3:
+            applyStyle(imageName: "CatchImage")
+        case 4:
+            applyStyle(imageName: "LeanImage")
+        default:
+            print("없음")
         }
     }
 }
