@@ -5,7 +5,7 @@ import Then
 import RxCocoa
 import RxSwift
 
-class MultipleCorrectionVIewController: UIViewController, SendDataDelegate, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, UIPopoverPresentationControllerDelegate {
+class MultipleCorrectionViewController: UIViewController, SendDataDelegate, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, UIPopoverPresentationControllerDelegate {
 
     let disposeBag = DisposeBag()
     
@@ -157,8 +157,6 @@ class MultipleCorrectionVIewController: UIViewController, SendDataDelegate, UIGe
         layout()
         setupButton()
         setupConstraints()
-        
-        userImageView1.image = selectedImages.first
     }
     
     func layout() {
@@ -258,10 +256,7 @@ class MultipleCorrectionVIewController: UIViewController, SendDataDelegate, UIGe
         
         frameButton.rx.tap
             .subscribe(with: self, onNext: { owner, _  in
-                owner.toggleButton(owner.frameButton)
-                owner.applyFrame()
-                owner.deselectButtons(except: owner.frameButton)
-                owner.showFrameViewSelectionView()
+                self.navigationController?.pushViewController(MultipleFrameViewController(), animated: true)
             })
             .disposed(by: disposeBag)
         
@@ -293,13 +288,14 @@ class MultipleCorrectionVIewController: UIViewController, SendDataDelegate, UIGe
             .subscribe(onNext: {
                 print("네비게이션 버튼이 클릭되었습니다.")
                 let editedFrame = EditedFrame(mainFrameView: self.mainFrameView, userImageView: self.userImageView1, exImage: self.exImage)
-                let finishVC = FinishViewController(editedFrame: editedFrame)
                 
+                let images = [self.userImageView1.image, self.userImageView2.image, self.userImageView3.image, self.userImageView4.image]
+                let viewController = MultipFinishViewController(images: images, editedFrame: editedFrame)
                 guard let navigationController = self.navigationController else {
                     fatalError("Navigation controller not found.")
                 }
 
-                navigationController.pushViewController(finishVC, animated: true)
+                navigationController.pushViewController(viewController, animated: true)
             })
             .disposed(by: disposeBag)
         
@@ -341,6 +337,10 @@ class MultipleCorrectionVIewController: UIViewController, SendDataDelegate, UIGe
         print("스티커 버튼이 탭되었습니다.")
         hideControlSelectionView()
         hideFameViewSelectionView()
+    }
+    
+    func setExImage(image: UIImage){
+      self.exImage.image = image
     }
     
     private func showFilterSelectionView() {
@@ -416,7 +416,7 @@ class MultipleCorrectionVIewController: UIViewController, SendDataDelegate, UIGe
     }
 }
 
-extension MultipleCorrectionVIewController {
+extension MultipleCorrectionViewController {
     // > 스티커 삭제 (꾹 눌러서 삭제)
     @objc func longPress(_ gesture : UILongPressGestureRecognizer){
         if gesture.state != .ended { return }
@@ -496,13 +496,13 @@ extension MultipleCorrectionVIewController {
     }
 }
 
-extension MultipleCorrectionVIewController: FrameViewDelegate {
+extension MultipleCorrectionViewController: FrameViewDelegate {
     func didSelectFrameImage(image: UIImage) {
         exImage.image = image
     }
 }
 
-extension MultipleCorrectionVIewController {
+extension MultipleCorrectionViewController {
     @objc func addTextToExImage() {
         let textField = UITextField(frame: CGRect(x: exImage.bounds.midX - 100, y: exImage.bounds.midY - 15, width: 200, height: 30))
         textField.center = exImage.convert(exImage.center, from: exImage.superview)
@@ -587,6 +587,7 @@ extension MultipleCorrectionVIewController {
         view.endEditing(true)
     }
 }
+
 
 extension UIImage {
     func resized(to size: CGSize) -> UIImage {

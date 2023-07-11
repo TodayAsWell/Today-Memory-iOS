@@ -249,7 +249,7 @@ class SingleCorrectionViewController: UIViewController, SendDataDelegate, UIGest
             .subscribe(onNext: {
                 print("네비게이션 버튼이 클릭되었습니다.")
                 let editedFrame = EditedFrame(mainFrameView: self.mainFrameView, userImageView: self.userImageView, exImage: self.exImage)
-                let finishVC = FinishViewController(editedFrame: editedFrame)
+                let finishVC = SingleFinishViewController(editedFrame: editedFrame)
                 
                 guard let navigationController = self.navigationController else {
                     fatalError("Navigation controller not found.")

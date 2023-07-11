@@ -735,7 +735,7 @@ extension MainCameraViewController: PHPickerViewControllerDelegate {
         
         dispatchGroup.notify(queue: .main) {
             let editedFrame = EditedFrame(userImageView: imageViews.first!)
-            let multipleCorrectionVC = MultipleCorrectionVIewController(images: selectedImages, editedFrame: editedFrame)
+            let multipleCorrectionVC = MultipleCorrectionViewController(images: selectedImages, editedFrame: editedFrame)
             let navController = UINavigationController(rootViewController: multipleCorrectionVC)
             navController.modalPresentationStyle = UIModalPresentationStyle.fullScreen
             self.present(navController, animated: true, completion: nil)

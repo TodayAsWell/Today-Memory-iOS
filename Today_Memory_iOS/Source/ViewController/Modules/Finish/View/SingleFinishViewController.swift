@@ -4,7 +4,7 @@ import Then
 import RxSwift
 import RxCocoa
 
-class FinishViewController: UIViewController, FinishViewInterface {
+class SingleFinishViewController: UIViewController, FinishViewInterface {
 //    var presenter: FinishPresenterInterface!
     
     private var disposeBag = DisposeBag()
