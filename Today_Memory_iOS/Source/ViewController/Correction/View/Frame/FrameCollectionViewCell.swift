@@ -66,7 +66,7 @@ class FrameCollectionViewCell: UICollectionViewCell {
     }
     private func updateSelectionStyle() {
         let borderWidth: CGFloat = isSelected ? 4 : 0
-        let borderColor: UIColor = isSelected ? .yellow : .clear
+        let borderColor: UIColor = isSelected ? .BAA7E7 : .clear
         imageView.layer.borderWidth = borderWidth
         imageView.layer.borderColor = borderColor.cgColor
     }

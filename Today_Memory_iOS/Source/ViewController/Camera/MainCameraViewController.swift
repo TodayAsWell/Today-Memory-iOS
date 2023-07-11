@@ -169,18 +169,18 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
         setupUI()
         configureDeviceMotion()
         
-        self.navigationItem.titleView = navCenterButton
-        navCenterButton.addTarget(self, action: #selector(navCenterButtonTapped), for: .touchUpInside)
+//        self.navigationItem.titleView = navCenterButton
+//        navCenterButton.addTarget(self, action: #selector(navCenterButtonTapped), for: .touchUpInside)
         
         styleSelectionView.delegate = self
         
     }
     
-    @objc func navCenterButtonTapped() {
-        print("네비게이션 가운데 버튼이 눌렸습니다.")
-        let imageToPrint = UIImage(named: "ExPolaroidx")!
-        self.cameraView.printImageAsPDF(image: imageToPrint)
-    }
+//    @objc func navCenterButtonTapped() {
+//        print("네비게이션 가운데 버튼이 눌렸습니다.")
+//        let imageToPrint = UIImage(named: "ExPolaroidx")!
+//        self.cameraView.printImageAsPDF(image: imageToPrint)
+//    }
     
     func configureDeviceMotion() {
         motionManager = CMMotionManager()
