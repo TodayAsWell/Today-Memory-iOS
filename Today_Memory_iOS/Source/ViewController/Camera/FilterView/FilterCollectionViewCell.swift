@@ -3,7 +3,6 @@ import RxSwift
 import RxCocoa
 import Then
 import SnapKit
-import SnapKit
 
 class FilterCollectionViewCell: UICollectionViewCell {
     let imageView: UIImageView = {
@@ -11,13 +10,13 @@ class FilterCollectionViewCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.borderWidth = 0
-        imageView.layer.cornerRadius = 32
         return imageView
     }()
     
     let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
+        label.textAlignment = .center
         return label
     }()
     
@@ -42,13 +41,16 @@ class FilterCollectionViewCell: UICollectionViewCell {
         imageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().offset(10)
-            make.width.height.equalTo(64)
+            make.width.height.equalTo(45.0)
         }
         
         contentView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(imageView.snp.bottom).offset(10)
+            make.top.equalTo(imageView.snp.bottom).offset(8)
+            make.bottom.equalToSuperview().offset(-10)
+            make.leading.greaterThanOrEqualToSuperview().offset(8)
+            make.trailing.lessThanOrEqualToSuperview().offset(-8)
         }
         
         updateSelectionStyle()

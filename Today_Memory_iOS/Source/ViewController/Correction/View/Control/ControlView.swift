@@ -16,13 +16,19 @@ class ControlView: UIView {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 7
-        layout.itemSize = CGSize(width: 100, height: 120)
+        layout.itemSize = CGSize(width: 100, height: 100)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
-        collectionView.showsHorizontalScrollIndicator = false // 스크롤 없애기
+        collectionView.showsHorizontalScrollIndicator = false
         return collectionView
     }()
+    
+    var mainTitle = UILabel().then {
+        $0.text = "글자"
+        $0.textColor = .BAA7E7
+        $0.font = .systemFont(ofSize: 20.0, weight: .semibold)
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -39,11 +45,17 @@ class ControlView: UIView {
     private func setupUI() {
         backgroundColor = .white
         
+        addSubview(mainTitle)
         addSubview(collectionView)
+        
+        mainTitle.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(19.0)
+            $0.centerX.equalToSuperview()
+        }
         collectionView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.top.equalToSuperview().offset(20)
-            $0.height.equalTo(100)
+            $0.top.equalTo(mainTitle.snp.bottom).offset(23.0)
+            $0.height.equalTo(80)
         }
     }
     private func setupCollectionView() {
@@ -55,28 +67,22 @@ class ControlView: UIView {
 
 extension ControlView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return 3
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FilterCollectionViewCell", for: indexPath) as! FilterCollectionViewCell
         
-//        cell.imageView.backgroundColor = .red
-        cell.titleLabel.text = "안녕"
-        
         switch indexPath.row {
         case 0:
-            cell.titleLabel.text = "밝기"
-            cell.imageView.image = UIImage(named: "sunImage")
+            cell.titleLabel.text = "글자색"
+            cell.imageView.image = UIImage(named: "0")
         case 1:
-            cell.titleLabel.text = "대비"
-            cell.imageView.image = UIImage(named: "prepareImage")
+            cell.titleLabel.text = "배경색"
+            cell.imageView.image = UIImage(named: "1")
         case 2:
-            cell.titleLabel.text = "보정"
-            cell.imageView.image = UIImage(named: "BellImage")
-        case 3:
-            cell.titleLabel.text = "글자"
-            cell.imageView.image = UIImage(named: "wordImage")
+            cell.titleLabel.text = "크기"
+            cell.imageView.image = UIImage(named: "2")
         default:
             cell.titleLabel.text = "없음"
             cell.imageView.backgroundColor = .black
