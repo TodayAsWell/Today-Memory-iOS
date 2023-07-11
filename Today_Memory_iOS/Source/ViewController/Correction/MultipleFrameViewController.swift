@@ -48,20 +48,28 @@ extension MultipleFrameViewController: UICollectionViewDelegate, UICollectionVie
         switch indexPath.row {
         case 0:
             cell.mainImage.image = UIImage(named: "Base4Frame")
+            cell.titleLabel.text = "Write Day"
         case 1:
             cell.mainImage.image = UIImage(named: "Black4Frame")
+            cell.titleLabel.text = "Black Day"
         case 2:
             cell.mainImage.image = UIImage(named: "Clover4Frame")
+            cell.titleLabel.text = "Clover Day"
         case 3:
             cell.mainImage.image = UIImage(named: "Gradation4Frame")
+            cell.titleLabel.text = "Spring Day"
         case 4:
             cell.mainImage.image = UIImage(named: "Ocean4Frame")
+            cell.titleLabel.text = "Ocean Day"
         case 5:
             cell.mainImage.image = UIImage(named: "Peach4Image")
+            cell.titleLabel.text = "Peach Day"
         case 6:
             cell.mainImage.image = UIImage(named: "Purple4Frame")
+            cell.titleLabel.text = "Purple Day"
         case 7:
             cell.mainImage.image = UIImage(named: "Universe4Frame")
+            cell.titleLabel.text = "Nature Day"
             
         default:
             cell.imageView.backgroundColor = .EEEEF0
