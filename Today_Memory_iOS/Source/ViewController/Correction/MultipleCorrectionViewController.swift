@@ -185,7 +185,7 @@ class MultipleCorrectionViewController: UIViewController, SendDataDelegate, UIGe
         }
         
         userImageView1.snp.makeConstraints {
-            $0.top.equalTo(mainFrameView.snp.top).offset(12)
+            $0.top.equalTo(mainFrameView.snp.top).offset(13.0)
             $0.centerX.equalTo(mainFrameView.snp.centerX)
             $0.width.equalTo(215.0)
             $0.height.equalTo(148.0)
