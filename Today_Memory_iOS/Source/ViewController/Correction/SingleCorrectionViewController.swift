@@ -118,6 +118,7 @@ class SingleCorrectionViewController: UIViewController, SendDataDelegate, UIGest
         self.editedFrame = editedFrame
         super.init(nibName: nil, bundle: nil)
     }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

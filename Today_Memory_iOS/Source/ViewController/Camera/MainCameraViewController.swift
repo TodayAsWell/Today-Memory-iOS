@@ -1,10 +1,10 @@
 import UIKit
+import PhotosUI
 import RxCocoa
 import RxSwift
 import SnapKit
 import Then
 import CoreMotion
-import BSImagePicker
 
 var takenImage = UIImage()
 
@@ -22,6 +22,9 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     var currentAngleH: Float = 0.0
     var currentAngleY: Float = 0.0
     var isSkyShot = false
+    
+    private var selections = [String : PHPickerResult]()
+    private var selectedAssetIdentifiers = [String]()
     
     lazy var menuItems: [UIAction] = {
         return [
@@ -346,7 +349,19 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
                 }
 
                 actionSheet.addAction(UIAlertAction(title: "인생 네컷", style: .default, handler: {(ACTION:UIAlertAction) in
-                    print("인생 네컷") 
+                    print("인생 네컷")
+                    
+                    var config = PHPickerConfiguration(photoLibrary: .shared())
+                    config.filter = PHPickerFilter.any(of: [.images])
+                    config.selectionLimit = 4
+                    config.selection = .ordered
+                    config.preferredAssetRepresentationMode = .current
+                    config.preselectedAssetIdentifiers = self.selectedAssetIdentifiers
+                    
+                    let imagePicker = PHPickerViewController(configuration: config)
+                    imagePicker.delegate = self
+                    
+                    self.present(imagePicker, animated: true)
                 }))
 
                 actionSheet.addAction(UIAlertAction(title: "단일 폴라로이드", style: .default, handler: {(ACTION:UIAlertAction) in
@@ -670,6 +685,61 @@ extension MainCameraViewController: StyleSelectionViewDelegate {
             applyStyle(imageName: "LeanImage")
         default:
             print("없음")
+        }
+    }
+}
+
+extension MainCameraViewController: PHPickerViewControllerDelegate {
+    
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true)
+        
+        var newSelections = [String: PHPickerResult]()
+        
+        for result in results {
+            let identifier = result.assetIdentifier!
+            newSelections[identifier] = selections[identifier] ?? result
+        }
+        
+        selections = newSelections
+        selectedAssetIdentifiers = results.compactMap { $0.assetIdentifier }
+        
+        guard !selections.isEmpty else {
+            print("이미지가 없음")
+            return
+        }
+        
+        var selectedImages = [UIImage]()
+        var imageViews = [UIImageView]()
+        let dispatchGroup = DispatchGroup()
+        
+        for assetIdentifier in selectedAssetIdentifiers {
+            dispatchGroup.enter()
+            
+            let provider = selections[assetIdentifier]?.itemProvider
+            
+            provider?.loadFileRepresentation(forTypeIdentifier: UTType.image.identifier) { url, error in
+                if let error = error {
+                    print("Error loading image: \(error)")
+                }
+                
+                if let url = url, let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+                    selectedImages.append(image)
+                    let imageView = UIImageView(image: image)
+                    imageViews.append(imageView)
+                }
+                
+                dispatchGroup.leave()
+            }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            let editedFrame = EditedFrame(userImageView: imageViews.first!)
+            let multipleCorrectionVC = MultipleCorrectionVIewController(images: selectedImages, editedFrame: editedFrame)
+            let navController = UINavigationController(rootViewController: multipleCorrectionVC)
+            navController.modalPresentationStyle = UIModalPresentationStyle.fullScreen
+            self.present(navController, animated: true, completion: nil)
+            
         }
     }
 }

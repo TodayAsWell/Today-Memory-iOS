@@ -12,7 +12,8 @@ class MultipleCorrectionVIewController: UIViewController, SendDataDelegate, UIGe
     private let controlView = ControlView()
     private let frameView = FrameView()
     private let stickerView = StickerView()
-    private var editedFrame: EditedFrame
+    var selectedImages: [UIImage]
+    var editedFrame: EditedFrame
     
     private var images: [UIImage]
     
@@ -48,12 +49,15 @@ class MultipleCorrectionVIewController: UIViewController, SendDataDelegate, UIGe
         $0.backgroundColor = .clear
     }
     
-    private var userImageView = UIImageView().then {
+    private var userImageView1 = UIImageView().then {
         $0.image = UIImage(named: "exexImage")
     }
+    private var userImageView2 = UIImageView()
+    private var userImageView3 = UIImageView()
+    private var userImageView4 = UIImageView()
     
     private var exImage = UIImageView().then {
-        $0.image = UIImage(named: "ExPolaroid")
+        $0.image = UIImage(named: "Base4Frame")
     }
     
     private let filterButton = UIButton(type: .system).then {
@@ -111,11 +115,25 @@ class MultipleCorrectionVIewController: UIViewController, SendDataDelegate, UIGe
         $0.distribution = .fillEqually
         $0.backgroundColor = .white
     }
-
+    
     init(images: [UIImage], editedFrame: EditedFrame) {
-        self.images = images
+        self.selectedImages = images
         self.editedFrame = editedFrame
+        let imageSize = CGSize(width: 215.0, height: 148.0)
+
+        let copiedImages = images.map {
+            $0.copy() as! UIImage
+        }.map {
+            $0.resized(to: imageSize)
+        }
+        self.images = copiedImages
+
         super.init(nibName: nil, bundle: nil)
+
+        userImageView1.image = copiedImages[0]
+        userImageView2.image = copiedImages[1]
+        userImageView3.image = copiedImages[2]
+        userImageView4.image = copiedImages[3]
     }
     
     required init?(coder: NSCoder) {
@@ -139,32 +157,59 @@ class MultipleCorrectionVIewController: UIViewController, SendDataDelegate, UIGe
         layout()
         setupButton()
         setupConstraints()
+        
+        userImageView1.image = selectedImages.first
     }
     
     func layout() {
         view.addSubview(mainFrameView)
-        view.addSubview(userImageView)
+        view.addSubview(userImageView1)
+        view.addSubview(userImageView2)
+        view.addSubview(userImageView3)
+        view.addSubview(userImageView4)
+        
         view.addSubview(exImage)
         
         mainFrameView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(40.0)
             $0.centerX.equalToSuperview()
-            $0.width.equalTo(504)
-            $0.height.equalTo(648)
+            $0.width.equalTo(250.0)
+            $0.height.equalTo(700.0)
         }
         
-        userImageView.snp.makeConstraints {
-            $0.top.equalTo(mainFrameView.snp.top).offset(30)
+        userImageView1.snp.makeConstraints {
+            $0.top.equalTo(mainFrameView.snp.top).offset(12)
             $0.centerX.equalTo(mainFrameView.snp.centerX)
-            $0.height.equalTo(462.0)
-            $0.width.equalTo(443.0)
+            $0.width.equalTo(215.0)
+            $0.height.equalTo(148.0)
+        }
+        
+        userImageView2.snp.makeConstraints {
+            $0.top.equalTo(userImageView1.snp.bottom).offset(10.0)
+            $0.centerX.equalTo(userImageView1.snp.centerX)
+            $0.width.equalTo(215.0)
+            $0.height.equalTo(148.0)
+        }
+        
+        userImageView3.snp.makeConstraints {
+            $0.top.equalTo(userImageView2.snp.bottom).offset(2.0)
+            $0.centerX.equalTo(userImageView2.snp.centerX)
+            $0.width.equalTo(215.0)
+            $0.height.equalTo(148.0)
+        }
+        
+        userImageView4.snp.makeConstraints {
+            $0.top.equalTo(userImageView3.snp.bottom).offset(3.0)
+            $0.centerX.equalTo(userImageView3.snp.centerX)
+            $0.width.equalTo(215.0)
+            $0.height.equalTo(148.0)
         }
         
         exImage.snp.makeConstraints {
             $0.top.equalTo(mainFrameView.snp.top)
             $0.centerX.equalTo(mainFrameView.snp.centerX)
-            $0.width.equalTo(504)
-            $0.height.equalTo(648)
+            $0.width.equalTo(245)
+            $0.height.equalTo(700)
         }
         
         
@@ -247,7 +292,7 @@ class MultipleCorrectionVIewController: UIViewController, SendDataDelegate, UIGe
         navigationItem.rightBarButtonItem?.rx.tap
             .subscribe(onNext: {
                 print("네비게이션 버튼이 클릭되었습니다.")
-                let editedFrame = EditedFrame(mainFrameView: self.mainFrameView, userImageView: self.userImageView, exImage: self.exImage)
+                let editedFrame = EditedFrame(mainFrameView: self.mainFrameView, userImageView: self.userImageView1, exImage: self.exImage)
                 let finishVC = FinishViewController(editedFrame: editedFrame)
                 
                 guard let navigationController = self.navigationController else {
@@ -540,5 +585,13 @@ extension MultipleCorrectionVIewController {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
+    }
+}
+
+extension UIImage {
+    func resized(to size: CGSize) -> UIImage {
+        return UIGraphicsImageRenderer(size: size).image { _ in
+            self.draw(in: CGRect(origin: .zero, size: size))
+        }
     }
 }
