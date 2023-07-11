@@ -1,10 +1,11 @@
+import Foundation
 import UIKit
 import SnapKit
 import Then
 import RxCocoa
 import RxSwift
 
-class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, UIPopoverPresentationControllerDelegate {
+class MultipleCorrectionVIewController: UIViewController, SendDataDelegate, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, UIPopoverPresentationControllerDelegate {
 
     let disposeBag = DisposeBag()
     
@@ -12,6 +13,8 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
     private let frameView = FrameView()
     private let stickerView = StickerView()
     private var editedFrame: EditedFrame
+    
+    private var images: [UIImage]
     
     var delegate: SendDataDelegate?
     
@@ -108,22 +111,19 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
         $0.distribution = .fillEqually
         $0.backgroundColor = .white
     }
-    
-    convenience init(image: UIImage, editedFrame: EditedFrame) {
-        self.init(editedFrame: editedFrame)
-        userImageView.image = image
-    }
 
-    init(editedFrame: EditedFrame) {
+    init(images: [UIImage], editedFrame: EditedFrame) {
+        self.images = images
         self.editedFrame = editedFrame
         super.init(nibName: nil, bundle: nil)
     }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let correctionViewController = segue.destination as? CorrectionViewController {
+        if let correctionViewController = segue.destination as? SingleCorrectionViewController {
             correctionViewController.delegate = self
         }
     }
@@ -371,7 +371,7 @@ class CorrectionViewController: UIViewController, SendDataDelegate, UIGestureRec
     }
 }
 
-extension CorrectionViewController {
+extension MultipleCorrectionVIewController {
     // > 스티커 삭제 (꾹 눌러서 삭제)
     @objc func longPress(_ gesture : UILongPressGestureRecognizer){
         if gesture.state != .ended { return }
@@ -451,13 +451,13 @@ extension CorrectionViewController {
     }
 }
 
-extension CorrectionViewController: FrameViewDelegate {
+extension MultipleCorrectionVIewController: FrameViewDelegate {
     func didSelectFrameImage(image: UIImage) {
         exImage.image = image
     }
 }
 
-extension CorrectionViewController {
+extension MultipleCorrectionVIewController {
     @objc func addTextToExImage() {
         let textField = UITextField(frame: CGRect(x: exImage.bounds.midX - 100, y: exImage.bounds.midY - 15, width: 200, height: 30))
         textField.center = exImage.convert(exImage.center, from: exImage.superview)

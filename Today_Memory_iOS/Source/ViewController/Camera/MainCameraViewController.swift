@@ -4,6 +4,7 @@ import RxSwift
 import SnapKit
 import Then
 import CoreMotion
+import BSImagePicker
 
 var takenImage = UIImage()
 
@@ -345,7 +346,7 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
                 }
 
                 actionSheet.addAction(UIAlertAction(title: "인생 네컷", style: .default, handler: {(ACTION:UIAlertAction) in
-                    print("인생 네컷")
+                    print("인생 네컷") 
                 }))
 
                 actionSheet.addAction(UIAlertAction(title: "단일 폴라로이드", style: .default, handler: {(ACTION:UIAlertAction) in
@@ -641,7 +642,7 @@ extension MainCameraViewController: UIImagePickerControllerDelegate {
                 let userImageView = UIImageView(image: img)
                 let editedFrame = EditedFrame(userImageView: userImageView)
                 
-                let vc = CorrectionViewController(image: img, editedFrame: editedFrame)
+                let vc = SingleCorrectionViewController(image: img, editedFrame: editedFrame)
                 let navController = UINavigationController(rootViewController: vc)
                 navController.modalPresentationStyle = UIModalPresentationStyle.fullScreen
                 self.present(navController, animated: true, completion: nil)

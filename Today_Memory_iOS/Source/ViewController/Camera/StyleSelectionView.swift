@@ -15,7 +15,7 @@ class StyleSelectionView: UIView {
     var selectedIndex: Int = 0
     
     let categorySegmentedControl: UISegmentedControl = {
-        let segmentedControl = UISegmentedControl(items: ["전체", "감정", "식물", "사람"])
+        let segmentedControl = UISegmentedControl(items: ["커플", "단일", "식물", "사람"])
         segmentedControl.addTarget(self, action: #selector(categorySegmentedControlValueChanged), for: .valueChanged)
 
         segmentedControl.addUnderlineForSelectedSegment()
