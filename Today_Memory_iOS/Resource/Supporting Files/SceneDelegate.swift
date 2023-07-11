@@ -16,6 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         var defualtImage: UIImage?
         let finishViewController = assembleSettingModule()
+        
         let mainViewController = MainCameraViewController()
         
         let navigationController = UINavigationController(rootViewController: mainViewController)

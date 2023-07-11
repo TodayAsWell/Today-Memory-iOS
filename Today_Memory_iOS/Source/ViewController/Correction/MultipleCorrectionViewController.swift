@@ -51,10 +51,17 @@ class MultipleCorrectionViewController: UIViewController, SendDataDelegate, UIGe
     
     private var userImageView1 = UIImageView().then {
         $0.image = UIImage(named: "exexImage")
+        $0.contentMode = .scaleToFill
     }
-    private var userImageView2 = UIImageView()
-    private var userImageView3 = UIImageView()
-    private var userImageView4 = UIImageView()
+    private var userImageView2 = UIImageView().then {
+        $0.contentMode = .scaleToFill
+    }
+    private var userImageView3 = UIImageView().then {
+        $0.contentMode = .scaleToFill
+    }
+    private var userImageView4 = UIImageView().then {
+        $0.contentMode = .scaleToFill
+    }
     
     private var exImage = UIImageView().then {
         $0.image = UIImage(named: "Base4Frame")
@@ -157,6 +164,8 @@ class MultipleCorrectionViewController: UIViewController, SendDataDelegate, UIGe
         layout()
         setupButton()
         setupConstraints()
+        
+        mainFrameView.clipsToBounds = true
     }
     
     func layout() {
