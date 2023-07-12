@@ -18,10 +18,15 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     var gridOn = false
     var touchShootOn = false
     
+    var captureCount = 0
+    
     var motionManager: CMMotionManager!
     var currentAngleH: Float = 0.0
     var currentAngleY: Float = 0.0
     var isSkyShot = false
+    
+    private var timer: Timer?
+    private var timerCount: Int = 5
     
     private var selections = [String : PHPickerResult]()
     private var selectedAssetIdentifiers = [String]()
@@ -34,8 +39,14 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
             UIAction(title: "화면 터치 촬영", image: UIImage(systemName: "hand.point.up.left.fill"), handler: { _ in
                 self.ellipsisButtonTap()
             }),
-            UIAction(title: "미정", image: UIImage(systemName: "arrow.clockwise"), handler: { _ in
+            UIAction(title: "5초 타이머", image: UIImage(systemName: "arrow.clockwise"), handler: { _ in
+                self.startTimer()
             }),
+            
+            UIAction(title: "5초씩 4장 촬영", image: UIImage(systemName: "arrow.clockwise"), handler: { _ in
+                self.startTimer1()
+            }),
+            
             UIAction(title: "설정", image: UIImage(systemName: "gearshape.fill"), handler: { _ in
                 print("설정")
                 let settingViewController = SettingViewController()
@@ -269,6 +280,114 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
         print("Zoom factor: \(zoomFactor)")
     }
     
+    @objc func timerDidFire() {
+        if timerCount > 0 {
+            DispatchQueue.main.async {
+                self.showTimerCount(self.timerCount)
+            }
+            timerCount -= 1
+        } else {
+            stopTimer()
+            capturePhotoWithTimer()
+            hideTimerCount()
+        }
+    }
+
+    func startTimer() {
+        stopTimer()
+        timerCount = 5
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(timerDidFire), userInfo: nil, repeats: true)
+    }
+
+    func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+        timerCount = 5
+    }
+
+    func showTimerCount(_ count: Int) {
+        let countLabel = UILabel()
+        countLabel.text = "\(count)"
+        countLabel.font = UIFont.systemFont(ofSize: 100, weight: .bold)
+        countLabel.textColor = .white
+        countLabel.textAlignment = .center
+        countLabel.alpha = 0.8
+        countLabel.tag = 1001
+
+        if let existingLabel = cameraView.viewWithTag(1001) as? UILabel {
+            existingLabel.removeFromSuperview()
+        }
+        cameraView.addSubview(countLabel)
+        countLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            countLabel.centerXAnchor.constraint(equalTo: cameraView.centerXAnchor),
+            countLabel.centerYAnchor.constraint(equalTo: cameraView.centerYAnchor)
+        ])
+    }
+    
+    func hideTimerCount() {
+        if let existingLabel = cameraView.viewWithTag(1001) as? UILabel {
+            existingLabel.removeFromSuperview()
+        }
+    }
+
+
+    func capturePhotoWithTimer() {
+        cameraView.capturePhoto { result in
+            switch result {
+            case .success(let image):
+                print("사진 저장")
+                UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+            case .failure(let error):
+                print("저장 실패 \(error)")
+            }
+        }
+        
+        DispatchQueue.main.async {
+            self.hideTimerCount()
+        }
+    }
+    
+    @objc func timerDidFire1() {
+        if timerCount > 0 {
+            DispatchQueue.main.async {
+                self.showTimerCount(self.timerCount)
+            }
+            timerCount -= 1
+        } else {
+            captureCount += 1
+            if captureCount <= 3 {
+                capturePhotoWithTimer()
+            } else {
+                stopTimer()
+                hideTimerCount()
+            }
+            timerCount = 5
+        }
+    }
+
+    func startTimer1() {
+        stopTimer()
+        timerCount = 5
+        captureCount = 0
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(timerDidFire1), userInfo: nil, repeats: true)
+    }
+
+    func capturePhotoWithTimer1() {
+        cameraView.capturePhoto { result in
+            switch result {
+            case .success(let image):
+                print("사진 저장")
+                UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+            case .failure(let error):
+                print("저장 실패 \(error)")
+            }
+        }
+        
+        DispatchQueue.main.async {
+            self.hideTimerCount()
+        }
+    }
     public func configureNavigationItems() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.triangle.2.circlepath"), style: .plain, target: self, action: #selector(backButtonTap(_:)))
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"),
@@ -294,6 +413,7 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
         
         return buttonContainer
     }
+    
     
     private func configureStackView() {
         
@@ -380,7 +500,13 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
         
         filterButton.rx.tap
             .subscribe(with: self, onNext: { owner, _  in
-                owner.showFilterSelectionView()
+//                owner.showFilterSelectionView()
+                let alert = UIAlertController(title: "죄송합니다", message: "아직 개발이 완성되지 않았습니다.", preferredStyle: .alert)
+                
+                let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+                alert.addAction(okAction)
+                
+                self.present(alert, animated: true, completion: nil)
             })
             .disposed(by: disposeBag)
         
@@ -401,6 +527,17 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
                 owner.hideStyleSelectionView()
             })
             .disposed(by: disposeBag)
+        
+        effectButton.rx
+            .tap.subscribe(with: self, onNext: { owner, _ in
+                let alert = UIAlertController(title: "죄송합니다", message: "아직 개발이 완성되지 않았습니다.", preferredStyle: .alert)
+                
+                let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+                alert.addAction(okAction)
+                
+                self.present(alert, animated: true, completion: nil)
+
+            })
     }
     
     private func layout() {

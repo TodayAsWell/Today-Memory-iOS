@@ -4,7 +4,7 @@ import Then
 import RxCocoa
 import RxSwift
 
-class SingleCorrectionViewController: UIViewController, SendDataDelegate, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, UIPopoverPresentationControllerDelegate {
+class SingleCorrectionViewController: UIViewController, SendDataDelegate, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, UIPopoverPresentationControllerDelegate, UITextFieldDelegate {
 
     let disposeBag = DisposeBag()
     
@@ -109,6 +109,11 @@ class SingleCorrectionViewController: UIViewController, SendDataDelegate, UIGest
         $0.backgroundColor = .white
     }
     
+    private var userTextField = UITextField(frame: .zero).then {
+        $0.placeholder = "입력해주세요"
+        $0.borderStyle = .roundedRect
+    }
+    
     convenience init(image: UIImage, editedFrame: EditedFrame) {
         self.init(editedFrame: editedFrame)
         userImageView.image = image
@@ -140,12 +145,15 @@ class SingleCorrectionViewController: UIViewController, SendDataDelegate, UIGest
         layout()
         setupButton()
         setupConstraints()
+        observeTextField()
+        userTextField.delegate = self
     }
     
     func layout() {
         view.addSubview(mainFrameView)
         view.addSubview(userImageView)
         view.addSubview(exImage)
+        view.addSubview(userTextField)
         
         mainFrameView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(40.0)
@@ -168,6 +176,12 @@ class SingleCorrectionViewController: UIViewController, SendDataDelegate, UIGest
             $0.height.equalTo(648)
         }
         
+        userTextField.snp.makeConstraints {
+            $0.centerY.equalTo(userImageView.snp.centerY).offset(300.0)
+            $0.centerX.equalTo(userImageView.snp.centerX)
+            $0.height.equalTo(50.0)
+            $0.width.equalTo(200.0)
+        }
         
         view.addSubview(bottomToolBar)
         view.addSubview(emptyView1)
@@ -238,6 +252,24 @@ class SingleCorrectionViewController: UIViewController, SendDataDelegate, UIGest
                 owner.showStickerViewSelectionView()
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func observeTextField() {
+        userTextField.rx.text.orEmpty
+            .map { $0.count > 10 }
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] isWarning in
+                self?.showWarning(isWarning)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func showWarning(_ isWarning: Bool) {
+        if isWarning {
+            print("경고: 텍스트가 10자를 초과하였습니다.")
+        } else {
+            print("경고 메시지 숨기기")
+        }
     }
     
     func setupNavigationItem() {
@@ -369,6 +401,14 @@ class SingleCorrectionViewController: UIViewController, SendDataDelegate, UIGest
         } completion: { _ in
             self.stickerView.removeFromSuperview()
         }
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let currentText = textField.text ?? ""
+        let newText = (currentText as NSString).replacingCharacters(in: range, with: string)
+        let words = newText.split(separator: " ")
+
+        return words.count <= 10
     }
 }
 

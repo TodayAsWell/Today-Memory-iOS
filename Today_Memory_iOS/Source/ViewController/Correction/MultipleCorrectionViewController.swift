@@ -87,16 +87,7 @@ class MultipleCorrectionViewController: UIViewController, SendDataDelegate, UIGe
             $0.height.equalTo(38)
         }
     }
-    private let adjustmentButton = UIButton(type: .system).then {
-        $0.setTitle("글자", for: .normal)
-        $0.setTitleColor(.black, for: .normal)
-        $0.titleLabel?.font = UIFont.systemFont(ofSize: 22.0, weight: .bold)
-        $0.layer.cornerRadius = 19
-        $0.snp.makeConstraints {
-            $0.width.equalTo(75)
-            $0.height.equalTo(38)
-        }
-    }
+    
     private let stickerButton = UIButton(type: .system).then {
         $0.setTitle("스티커", for: .normal)
         $0.setTitleColor(.black, for: .normal)
@@ -234,7 +225,6 @@ class MultipleCorrectionViewController: UIViewController, SendDataDelegate, UIGe
         bottomToolBar.addArrangedSubview(emptyView1)
         bottomToolBar.addArrangedSubview(filterButton)
         bottomToolBar.addArrangedSubview(frameButton)
-        bottomToolBar.addArrangedSubview(adjustmentButton)
         bottomToolBar.addArrangedSubview(stickerButton)
         bottomToolBar.addArrangedSubview(emptyView2)
         
@@ -266,15 +256,6 @@ class MultipleCorrectionViewController: UIViewController, SendDataDelegate, UIGe
         frameButton.rx.tap
             .subscribe(with: self, onNext: { owner, _  in
                 self.navigationController?.pushViewController(MultipleFrameViewController(), animated: true)
-            })
-            .disposed(by: disposeBag)
-        
-        adjustmentButton.rx.tap
-            .subscribe(with: self, onNext: { owner, _  in
-                owner.toggleButton(owner.adjustmentButton)
-                owner.adjustPhoto()
-                owner.deselectButtons(except: owner.adjustmentButton)
-                owner.showFilterSelectionView()
             })
             .disposed(by: disposeBag)
         
@@ -318,7 +299,7 @@ class MultipleCorrectionViewController: UIViewController, SendDataDelegate, UIGe
     }
     
     func deselectButtons(except selectedButton: UIButton?) {
-        let buttonsToDeselect = [filterButton, frameButton, adjustmentButton, stickerButton].filter { $0 != selectedButton }
+        let buttonsToDeselect = [filterButton, frameButton, stickerButton].filter { $0 != selectedButton }
         buttonsToDeselect.forEach { $0?.isSelected = false }
         buttonsToDeselect.forEach { $0?.backgroundColor = .clear }
     }
