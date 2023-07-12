@@ -109,10 +109,10 @@ class SingleCorrectionViewController: UIViewController, SendDataDelegate, UIGest
         $0.backgroundColor = .white
     }
     
-    private var userTextField = UITextField(frame: .zero).then {
-        $0.placeholder = "입력해주세요"
-        $0.borderStyle = .roundedRect
-    }
+//    private var userTextField = UITextField(frame: .zero).then {
+//        $0.placeholder = "입력해주세요"
+//        $0.borderStyle = .roundedRect
+//    }
     
     convenience init(image: UIImage, editedFrame: EditedFrame) {
         self.init(editedFrame: editedFrame)
@@ -146,19 +146,19 @@ class SingleCorrectionViewController: UIViewController, SendDataDelegate, UIGest
         setupButton()
         setupConstraints()
         observeTextField()
-        userTextField.delegate = self
+//        userTextField.delegate = self
     }
     
     func layout() {
         view.addSubview(mainFrameView)
         view.addSubview(userImageView)
         view.addSubview(exImage)
-        view.addSubview(userTextField)
+//        view.addSubview(userTextField)
         
         mainFrameView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(40.0)
             $0.centerX.equalToSuperview()
-            $0.width.equalTo(504)
+            $0.width.equalTo(494)
             $0.height.equalTo(648)
         }
         
@@ -176,12 +176,12 @@ class SingleCorrectionViewController: UIViewController, SendDataDelegate, UIGest
             $0.height.equalTo(648)
         }
         
-        userTextField.snp.makeConstraints {
-            $0.centerY.equalTo(userImageView.snp.centerY).offset(300.0)
-            $0.centerX.equalTo(userImageView.snp.centerX)
-            $0.height.equalTo(50.0)
-            $0.width.equalTo(200.0)
-        }
+//        userTextField.snp.makeConstraints {
+//            $0.centerY.equalTo(userImageView.snp.centerY).offset(300.0)
+//            $0.centerX.equalTo(userImageView.snp.centerX)
+//            $0.height.equalTo(50.0)
+//            $0.width.equalTo(200.0)
+//        }
         
         view.addSubview(bottomToolBar)
         view.addSubview(emptyView1)
@@ -255,13 +255,13 @@ class SingleCorrectionViewController: UIViewController, SendDataDelegate, UIGest
     }
     
     private func observeTextField() {
-        userTextField.rx.text.orEmpty
-            .map { $0.count > 10 }
-            .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] isWarning in
-                self?.showWarning(isWarning)
-            })
-            .disposed(by: disposeBag)
+//        userTextField.rx.text.orEmpty
+//            .map { $0.count > 10 }
+//            .distinctUntilChanged()
+//            .subscribe(onNext: { [weak self] isWarning in
+//                self?.showWarning(isWarning)
+//            })
+//            .disposed(by: disposeBag)
     }
     
     private func showWarning(_ isWarning: Bool) {

@@ -5,6 +5,7 @@ import RxSwift
 import SnapKit
 import Then
 import CoreMotion
+import AVFoundation
 
 var takenImage = UIImage()
 
@@ -18,12 +19,19 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
     var gridOn = false
     var touchShootOn = false
     
+    var soundID:SystemSoundID = 0
+    var soundURL: URL?
+    
     var captureCount = 0
     
     var motionManager: CMMotionManager!
     var currentAngleH: Float = 0.0
     var currentAngleY: Float = 0.0
     var isSkyShot = false
+    
+    var audioPlayer: AVAudioPlayer?
+
+    let soundFileName = "Sounds"
     
     private var timer: Timer?
     private var timerCount: Int = 5
@@ -184,7 +192,6 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
 //        navCenterButton.addTarget(self, action: #selector(navCenterButtonTapped), for: .touchUpInside)
         
         styleSelectionView.delegate = self
-        
     }
     
 //    @objc func navCenterButtonTapped() {
@@ -356,7 +363,7 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
             timerCount -= 1
         } else {
             captureCount += 1
-            if captureCount <= 3 {
+            if captureCount <= 4 {
                 capturePhotoWithTimer()
             } else {
                 stopTimer()
@@ -388,6 +395,7 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
             self.hideTimerCount()
         }
     }
+    
     public func configureNavigationItems() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.triangle.2.circlepath"), style: .plain, target: self, action: #selector(backButtonTap(_:)))
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"),
@@ -656,6 +664,7 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
                     switch result {
                     case .success(let image):
                         print("사진 저장")
+                        self.playMusic()
                         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
                         break
                     case .failure(let error):
@@ -664,6 +673,20 @@ class MainCameraViewController: UIViewController, UINavigationControllerDelegate
                     }
                 }
             }
+    }
+    
+    private func playMusic() {
+        let url = Bundle.main.url(forResource: soundFileName, withExtension: "mp3")
+        if let url = url {
+            do {
+                print("사진이 찍힘")
+                audioPlayer = try AVAudioPlayer(contentsOf: url)
+                audioPlayer?.prepareToPlay()
+                audioPlayer?.play()
+            } catch {
+                print(error)
+            }
+        }
     }
     
     @objc private func backButtonTap(_ sender: Any) {

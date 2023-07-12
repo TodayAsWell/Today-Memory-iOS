@@ -65,10 +65,31 @@ extension FrameView: UICollectionViewDelegate, UICollectionViewDataSource {
         cell.imageView.image = UIImage(named: "FameImage")
         cell.titleLabel.text = "Flower"
         
-        if indexPath.row == 1 {
+        
+        switch indexPath.row {
+        case 1:
+            cell.imageView.image = UIImage(named: "EXBlackDesignFrame")
+            cell.titleLabel.text = "balckPainting"
+        case 2:
+            cell.imageView.image = UIImage(named: "11")
+            cell.titleLabel.text = "Spring"
+        case 3:
+            cell.imageView.image = UIImage(named: "14")
+            cell.titleLabel.text = "Flower"
+        case 4:
+            cell.imageView.image = UIImage(named: "15")
+            cell.titleLabel.text = "Flower"
+        case 5:
+            cell.imageView.image = UIImage(named: "16")
+            cell.titleLabel.text = "Cool"
+        case 6:
+            cell.imageView.image = UIImage(named: "17")
+            cell.titleLabel.text = "balckPainting"
+        default:
             cell.imageView.image = UIImage(named: "EXBlackDesignFrame")
             cell.titleLabel.text = "balckPainting"
         }
+        
         
         
         return cell
@@ -85,6 +106,24 @@ extension FrameView: UICollectionViewDelegate, UICollectionViewDataSource {
             delegate?.didSelectFrameImage(image: selectedImage!)
         case 1:
             selectedImage = UIImage(named: "blackDesignFrame")
+            delegate?.didSelectFrameImage(image: selectedImage!)
+        case 2:
+            selectedImage = UIImage(named: "100")
+            delegate?.didSelectFrameImage(image: selectedImage!)
+        case 3:
+            selectedImage = UIImage(named: "104")
+            delegate?.didSelectFrameImage(image: selectedImage!)
+        case 4:
+            selectedImage = UIImage(named: "105")
+            delegate?.didSelectFrameImage(image: selectedImage!)
+        case 5:
+            selectedImage = UIImage(named: "106")
+            delegate?.didSelectFrameImage(image: selectedImage!)
+        case 6:
+            selectedImage = UIImage(named: "107")
+            delegate?.didSelectFrameImage(image: selectedImage!)
+        case 7:
+            selectedImage = UIImage(named: "108")
             delegate?.didSelectFrameImage(image: selectedImage!)
             
         default:

@@ -46,10 +46,10 @@ class MultipFinishViewController: UIViewController, FinishViewInterface {
             userImageView4.image = image4
         }
     }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     
     private var downloadButton = UIButton().then {
         $0.setImage(UIImage(named: "DownloadImage"), for: .normal)
@@ -109,11 +109,20 @@ class MultipFinishViewController: UIViewController, FinishViewInterface {
             .disposed(by: disposeBag)
         setupNavigationItem()
         layout()
+        
+        let backButton = UIBarButtonItem(title: "처음으로", style: .plain, target: self, action: #selector(backToMainCamera))
+        navigationItem.rightBarButtonItem = backButton
     }
-    
+
     func setupNavigationItem() {
         title = "저장 완료!"
         view.backgroundColor = .F6F6F8
+        navigationController?.navigationBar.tintColor = .black
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "처음으로", style: .plain, target: self, action: #selector(backToMainCamera))
+    }
+    
+    @objc func backToMainCamera() {
+        navigationController?.popToRootViewController(animated: true)
     }
 
     func layout() {

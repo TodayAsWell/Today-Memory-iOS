@@ -146,9 +146,9 @@ class MultipleCorrectionViewController: UIViewController, SendDataDelegate, UIGe
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-//        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(addTextToExImage))
-//        exImage.addGestureRecognizer(tapGestureRecognizer)
+        
+        //        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(addTextToExImage))
+        //        exImage.addGestureRecognizer(tapGestureRecognizer)
         exImage.isUserInteractionEnabled = true
         
         setupNavigationItem()
